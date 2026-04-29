@@ -2,14 +2,19 @@
   "name": "bun-ddd-api-template",
   "type": "module",
   "scripts": {
-    "check": "ultracite check",
-    "fix": "ultracite fix",
-    "prepare": "husky",
+    "dev": "bun --watch src/infra/server.ts",
+    "build": "bun build src/infra/server.ts --outfile dist/server.js",
+    "start": "NODE_ENV=production bun run dist/server.js",
     "db:generate": "bun --bun drizzle-kit generate",
     "db:migrate": "bun --bun drizzle-kit migrate",
-    "db:studio": "bun --bun drizzle-kit studio"
+    "db:studio": "bun --bun drizzle-kit studio",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "prepare": "husky"
   },
   "dependencies": {
+    "@elysiajs/cors": "^1.4.2",
+    "@elysiajs/openapi": "^1.4.15",
     "archstone": "^1.5.4",
     "drizzle-orm": "^0.45.2",
     "elysia": "^1.4.28",
