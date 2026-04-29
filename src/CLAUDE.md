@@ -1,10 +1,10 @@
 # src
 
-Source root. Two layers exist today; a third is reserved.
+Source root. Three layers are active.
 
 - `core/` — framework-agnostic primitives shared by every context. See @src/core/CLAUDE.md.
 - `domain/` — business model, organized by bounded context. See @src/domain/CLAUDE.md.
-- `infra/` — **does not exist yet.** Add this folder when introducing an HTTP server, DB driver, ORM, message broker, or any third-party integration. See "Infra extension point" below.
+- `infra/` — runtime adapters and integrations (HTTP, DB, env, server bootstrap). See @src/infra/CLAUDE.md.
 
 ## Dependency rule
 
@@ -38,14 +38,4 @@ If a needed import would point right, the type is in the wrong layer — move it
 
 ## Tests
 
-Specs are colocated as `<file>.spec.ts` next to source. `*.e2e-spec.ts` is reserved for integration tests once `infra/` exists. Never put a spec under `test/`.
-
-## Infra extension point
-
-When `src/infra/` is created, mirror this shape based on the conventions already in use:
-
-- `src/infra/http/` — `Bun.serve()` adapter; route handlers translate request → use case input, call the use case, and use `AppError.toResponse()` for left branches.
-- `src/infra/database/` — concrete repositories implementing contracts from `src/domain/<ctx>/application/repositories/`. Each implementation must call `DomainEvents.dispatchEventsForAggregate(aggregate.id)` after a successful `create`, mirroring `test/repositories/in-memory-example.repository.ts`.
-- `src/infra/env/` — typed env loader (Bun reads `.env` automatically; validate with `zod`).
-
-Add `src/infra/CLAUDE.md` at that point. Until then, do not put implementation code in `core/` or `domain/`.
+Specs are colocated as `<file>.spec.ts` next to source. `*.e2e-spec.ts` is reserved for integration tests. Never put a spec under `test/`.

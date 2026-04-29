@@ -8,7 +8,11 @@ Bun (runtime, test runner, package manager, env loader) · TypeScript (strict, E
 
 ## Architecture
 
-DDD by bounded context. `src/core/` holds framework-agnostic primitives. `src/domain/<context>/` holds the business model split into `enterprise/` (entities, value objects, aggregates, domain events) and `application/` (use cases, repository contracts, application errors, event subscribers). Infrastructure (`src/infra/`) is an unbuilt extension point — add it when an HTTP server, DB, or external integration is introduced.
+DDD by bounded context with explicit layering: `infra -> domain -> core`.
+
+- `src/core/` holds framework-agnostic primitives.
+- `src/domain/<context>/` holds the business model split into `enterprise/` (entities, value objects, aggregates, domain events) and `application/` (use cases, repository contracts, application errors, event subscribers).
+- `src/infra/` contains adapters and integrations (HTTP, database, env, runtime bootstrap).
 
 ## Layout
 
@@ -16,6 +20,7 @@ DDD by bounded context. `src/core/` holds framework-agnostic primitives. `src/do
 src/
   core/      shared, business-agnostic primitives (errors, future utilities)
   domain/    bounded contexts; one folder per context
+  infra/     runtime adapters (http, database, env, server/app)
 test/        test scaffolding only — factories, in-memory repos, helpers
 docs/        long-form docs (architecture rationale, ADRs)
 ```
@@ -28,12 +33,18 @@ Only commands defined in `package.json` and `.husky/pre-commit`:
 
 ```bash
 bun install        # install dependencies
+bun run dev        # start API in watch mode
+bun run build      # build server bundle to dist/server.js
+bun run start      # run production bundle
+bun run db:generate  # create drizzle migrations from schema
+bun run db:migrate   # apply migrations
+bun run db:studio    # open drizzle studio
 bun test           # run every *.spec.ts (built-in runner, no npm script)
 bun run check      # ultracite check (lint + format diagnostics)
 bun run fix        # ultracite fix (apply lint + format)
 ```
 
-The pre-commit hook runs `bun test` then `bun x ultracite fix` and re-stages modified files. There is no `dev`, `build`, `start`, or `migrate` script — add them in derived projects when infra exists.
+The pre-commit hook runs `bun test` then `bun x ultracite fix` and re-stages modified files.
 
 ## Conventions
 

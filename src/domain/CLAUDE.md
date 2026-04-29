@@ -53,7 +53,7 @@ src/domain/<context>/
 
 - Interface only — no class, no implementation.
 - Compose `archstone`'s segregated interfaces (`Creatable`, `Findable`, `Saveable`, `Deletable`) when they fit; otherwise declare methods inline.
-- Add domain-specific finders (e.g. `findByName(name)`) directly on the interface.
+- Add domain-specific finders (e.g. `findBySlug(slug)` or `findByName(name)`) directly on the interface.
 
 ## Use case
 
