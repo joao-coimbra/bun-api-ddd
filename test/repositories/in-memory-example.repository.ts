@@ -22,6 +22,12 @@ export class InMemoryExampleRepository
     return Promise.resolve()
   }
 
+  findBySlug(slug: string): Promise<Example | null> {
+    const example = this.items.find((item) => item.slug === slug)
+
+    return Promise.resolve(example ?? null)
+  }
+
   override async save(example: Example): Promise<void> {
     const newAttachments = example.attachments.getNewItems()
     const removedAttachments = example.attachments.getRemovedItems()
@@ -30,11 +36,5 @@ export class InMemoryExampleRepository
     await this.exampleAttachmentsRepository.deleteMany(removedAttachments)
 
     await super.save(example)
-  }
-
-  findByName(name: string): Promise<Example | null> {
-    const example = this.items.find((item) => item.name === name)
-
-    return Promise.resolve(example ?? null)
   }
 }

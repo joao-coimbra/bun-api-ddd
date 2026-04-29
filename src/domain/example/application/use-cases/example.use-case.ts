@@ -1,5 +1,6 @@
 import { type Either, left, right, type UseCase } from "archstone"
 import { Example } from "../../enterprise/entities/example.entity"
+import { Slug } from "../../enterprise/entities/value-objects/slug.vo"
 import type { ExampleRepository } from "../repositories/example.repository"
 import { ExampleAlreadyExistsError } from "./errors/example-already-exists.error"
 import { ExampleIsATeapotError } from "./errors/example-is-a-teapot.error"
@@ -23,7 +24,8 @@ export class ExampleUseCase
     name,
     description,
   }: ExampleUseCaseRequest): Promise<ExampleUseCaseResponse> {
-    const existingExample = await this.exampleRepository.findByName(name)
+    const slug = Slug.createFromText(name).value
+    const existingExample = await this.exampleRepository.findBySlug(slug)
 
     if (existingExample) {
       return left(new ExampleAlreadyExistsError(name))
