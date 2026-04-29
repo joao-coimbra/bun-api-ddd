@@ -1,17 +1,23 @@
 import { beforeEach, describe, expect, it } from "bun:test"
 import { makeExample } from "test/factories/make-example.factory"
 import { InMemoryExampleRepository } from "test/repositories/in-memory-example.repository"
+import { InMemoryExampleAttachmentsRepository } from "test/repositories/in-memory-example-attachments.repository"
 import { ExampleAlreadyExistsError } from "./errors/example-already-exists.error"
 import { ExampleIsATeapotError } from "./errors/example-is-a-teapot.error"
 import { ExampleUseCase } from "./example.use-case"
 
 let inMemoryExampleRepository: InMemoryExampleRepository
+let inMemoryExampleAttachmentsRepository: InMemoryExampleAttachmentsRepository
 
 let sut: ExampleUseCase
 
 describe("ExampleUseCase", () => {
   beforeEach(() => {
-    inMemoryExampleRepository = new InMemoryExampleRepository()
+    inMemoryExampleAttachmentsRepository =
+      new InMemoryExampleAttachmentsRepository()
+    inMemoryExampleRepository = new InMemoryExampleRepository(
+      inMemoryExampleAttachmentsRepository
+    )
 
     sut = new ExampleUseCase(inMemoryExampleRepository)
   })

@@ -1,11 +1,13 @@
 import { AggregateRoot, type Optional, type UniqueEntityId } from "archstone"
 import { ExampleCreatedEvent } from "../events/example-created.event"
+import { ExampleAttachmentList } from "./example-attachment-list.entity"
 import { Slug } from "./value-objects/slug.vo"
 
 export interface ExampleProps {
   name: string
   slug: Slug
   description: string
+  attachments: ExampleAttachmentList
   processedBySubscriber: boolean
   createdAt: Date
   updatedAt?: Date | null
@@ -28,6 +30,15 @@ export class Example extends AggregateRoot<ExampleProps> {
     return this.props.createdAt
   }
 
+  get attachments(): ExampleAttachmentList {
+    return this.props.attachments
+  }
+
+  set attachments(attachments: ExampleAttachmentList) {
+    this.props.attachments = attachments
+    this.touch()
+  }
+
   get processedBySubscriber(): boolean {
     return this.props.processedBySubscriber
   }
@@ -44,7 +55,7 @@ export class Example extends AggregateRoot<ExampleProps> {
   static create(
     props: Optional<
       ExampleProps,
-      "createdAt" | "slug" | "processedBySubscriber"
+      "createdAt" | "slug" | "attachments" | "processedBySubscriber"
     >,
     id?: UniqueEntityId
   ): Example {
@@ -52,13 +63,16 @@ export class Example extends AggregateRoot<ExampleProps> {
       {
         ...props,
         slug: props.slug ?? Slug.createFromText(props.name),
+        attachments: props.attachments ?? new ExampleAttachmentList(),
         processedBySubscriber: props.processedBySubscriber ?? false,
         createdAt: props.createdAt ?? new Date(),
       },
       id
     )
 
-    if (!id) {
+    const isNewExample = !id
+
+    if (isNewExample) {
       example.addDomainEvent(new ExampleCreatedEvent(example))
     }
 
