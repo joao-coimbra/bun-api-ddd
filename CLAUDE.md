@@ -1,106 +1,57 @@
+# bun-ddd-api-template
 
-Default to using Bun instead of Node.js.
+A Bun-first TypeScript API template scaffolding Domain-Driven Design by bounded context. Use it as the starting point for any new backend service.
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Use `bunx <package> <command>` instead of `npx <package> <command>`
-- Bun automatically loads .env, so don't use dotenv.
+## Stack
 
-## APIs
+Bun (runtime, test runner, package manager, env loader) · TypeScript (strict, ESNext, `verbatimModuleSyntax`) · [`archstone`](https://www.npmjs.com/package/archstone) for DDD primitives (`Entity`, `AggregateRoot`, `ValueObject`, `WatchedList`, `UniqueEntityId`, `DomainEvents`, `EventHandler`, `UseCase`, `Either`) · `zod` (declared, reserved for validation) · Ultracite + Biome + Husky.
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+## Architecture
 
-## Testing
+DDD by bounded context. `src/core/` holds framework-agnostic primitives. `src/domain/<context>/` holds the business model split into `enterprise/` (entities, value objects, aggregates, domain events) and `application/` (use cases, repository contracts, application errors, event subscribers). Infrastructure (`src/infra/`) is an unbuilt extension point — add it when an HTTP server, DB, or external integration is introduced.
 
-Use `bun test` to run tests.
+## Layout
 
-```ts#index.test.ts
-import { test, expect } from "bun:test";
-
-test("hello world", () => {
-  expect(1).toBe(1);
-});
+```
+src/
+  core/      shared, business-agnostic primitives (errors, future utilities)
+  domain/    bounded contexts; one folder per context
+test/        test scaffolding only — factories, in-memory repos, helpers
+docs/        long-form docs (architecture rationale, ADRs)
 ```
 
-## Frontend
+`test/` contains **helpers only**. Spec files live next to the source they cover as `<file>.spec.ts`. See @src/CLAUDE.md and @test/CLAUDE.md.
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+## Commands
 
-Server:
+Only commands defined in `package.json` and `.husky/pre-commit`:
 
-```ts#index.ts
-import index from "./index.html"
-
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
+```bash
+bun install        # install dependencies
+bun test           # run every *.spec.ts (built-in runner, no npm script)
+bun run check      # ultracite check (lint + format diagnostics)
+bun run fix        # ultracite fix (apply lint + format)
 ```
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
+The pre-commit hook runs `bun test` then `bun x ultracite fix` and re-stages modified files. There is no `dev`, `build`, `start`, or `migrate` script — add them in derived projects when infra exists.
 
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
+## Conventions
 
-With the following `frontend.tsx`:
+- **Path aliases** (`tsconfig.json`): `@/*` → `./src/*`, `test/*` → `./test/*`. Use `test/...` (no `@`) when importing helpers from a spec.
+- **File names**: kebab-case with role suffix — `<name>.entity.ts`, `<name>.vo.ts`, `<name>.repository.ts`, `<name>.use-case.ts`, `<name>.error.ts`, `<subject>-<verb>.event.ts`, `on-<subject>-<verb>.subscriber.ts`, `<entity>-list.entity.ts`, `make-<entity>.factory.ts`, `in-memory-<entity>.repository.ts`.
+- **Class names**: PascalCase with matching suffix — `<Name>UseCase`, `<Name>Repository` (interface), `<Subject><Verb>Event`, `On<Subject><Verb>`, `<Name>Error`. One class per file.
+- **Imports**: direct file imports only — never barrel files (`index.ts`). `import type` for type-only imports (required by `verbatimModuleSyntax`).
+- **Cross-context relative imports**: use `../` inside a single bounded context; cross to `core/` via `@/core/...`. Never reach across two different `domain/<context>/` folders.
+- **Formatting**: Biome via Ultracite. Semicolons `asNeeded`. `Bun` is a global. Run `bun run fix` before committing — the hook will do it anyway.
+- **Errors**: extend the right base from `@/core/errors/*` so HTTP status and `toResponse()` are inherited. Use cases return `Either<ErrA | ErrB, Success>` — never throw expected failures.
+- **`archstone` import paths**: `Entity`, `AggregateRoot`, `ValueObject`, `WatchedList`, `UniqueEntityId`, `Optional`, `UseCase`, `Either`/`left`/`right` are imported from the root `archstone`. `EventHandler`, `DomainEvents`, `DomainEvent` are imported from `archstone/core`. `UseCaseError` and the `Repository`/`Findable`/`Creatable`/`Saveable`/`Deletable` interfaces are imported from `archstone/domain/application`.
 
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
+## Do not
 
-// import .css files directly and it works
-import './index.css';
-
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
-
-root.render(<Frontend />);
-```
-
-Then, run index.ts
-
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+- Do not import from `src/domain/` inside `src/core/` (or from one bounded context into another).
+- Do not introduce barrel `index.ts` files.
+- Do not throw expected failures from a use case — return `left(new <Error>())`.
+- Do not dispatch domain events from `repository.save` — dispatch only from `repository.create` (see @src/domain/CLAUDE.md).
+- Do not write specs inside `test/`. Specs live next to source as `<file>.spec.ts`.
+- Do not commit `.env` (already gitignored).
+- Do not use `node`, `npm`, `npx`, or `dotenv` — Bun replaces them.
