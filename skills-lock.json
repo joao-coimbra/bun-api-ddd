@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "archstone": {
+      "source": "joao-coimbra/archstone",
+      "sourceType": "github",
+      "skillPath": "skills/use-archstone/SKILL.md",
+      "computedHash": "abda06319e2fd03bc302811b55870346b08c6e5c155a47feb3a86aceb414e94f"
+    },
     "ultracite": {
       "source": "haydenbleasel/ultracite",
       "sourceType": "github",
