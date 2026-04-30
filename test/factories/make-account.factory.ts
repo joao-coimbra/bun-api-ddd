@@ -37,7 +37,7 @@ export class AccountFactory {
 
     const row = DrizzleAccountMapper.toDrizzle(account)
 
-    await this.drizzle.insert(schema.user).values(row)
+    await this.drizzle.insert(schema.users).values(row)
 
     return account
   }

@@ -1,4 +1,3 @@
-import { example } from "./example"
-import { user } from "./user"
+import { users } from "./users"
 
-export const schema = { example, user }
+export const schema = { users }

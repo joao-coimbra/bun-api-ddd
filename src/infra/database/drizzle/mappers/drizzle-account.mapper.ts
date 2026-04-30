@@ -1,7 +1,7 @@
 import { UniqueEntityId } from "archstone"
 import { Account } from "@/domain/identity/enterprise/entities/account.entity"
 import { Slug } from "@/domain/identity/enterprise/entities/value-objects/slug.vo"
-import type { DrizzleUser } from "../schema/user"
+import type { DrizzleUser } from "../schema/users"
 
 class DrizzleAccountMapperImplementation {
   toDomain(raw: DrizzleUser): Account {

@@ -19,7 +19,7 @@ describe("Register Account (E2E)", () => {
 
   describe("[POST] /accounts 201", () => {
     beforeEach(async () => {
-      await db.delete(schema.user)
+      await db.delete(schema.users)
     })
 
     test("should be able to register a new account without slug", async () => {
@@ -62,7 +62,7 @@ describe("Register Account (E2E)", () => {
 
   describe("[POST] /accounts 409", () => {
     beforeEach(async () => {
-      await db.delete(schema.user)
+      await db.delete(schema.users)
     })
 
     test("should not be able to register a new account with same username", async () => {

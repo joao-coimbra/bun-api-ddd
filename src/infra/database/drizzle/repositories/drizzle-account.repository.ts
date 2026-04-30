@@ -1,4 +1,3 @@
-import { eq } from "drizzle-orm"
 import type { AccountRepository } from "@/domain/identity/application/repositories/account.repository"
 import type { Account } from "@/domain/identity/enterprise/entities/account.entity"
 import type { DrizzleClient } from "../client"
@@ -11,28 +10,28 @@ export class DrizzleAccountRepository implements AccountRepository {
   async create(account: Account): Promise<void> {
     const raw = DrizzleAccountMapper.toDrizzle(account)
 
-    await this.drizzle.insert(schema.user).values(raw)
+    await this.drizzle.insert(schema.users).values(raw)
   }
 
   async findByUsername(username: string): Promise<Account | null> {
-    const raw = await this.drizzle.query.user.findFirst({
-      where: eq(schema.user.username, username),
+    const raw = await this.drizzle.query.users.findFirst({
+      where: (users, { eq }) => eq(users.username, username),
     })
 
     return raw ? DrizzleAccountMapper.toDomain(raw) : null
   }
 
   async findByEmail(email: string): Promise<Account | null> {
-    const raw = await this.drizzle.query.user.findFirst({
-      where: eq(schema.user.email, email),
+    const raw = await this.drizzle.query.users.findFirst({
+      where: (users, { eq }) => eq(users.email, email),
     })
 
     return raw ? DrizzleAccountMapper.toDomain(raw) : null
   }
 
   async findBySlug(slug: string): Promise<Account | null> {
-    const raw = await this.drizzle.query.user.findFirst({
-      where: eq(schema.user.slug, slug),
+    const raw = await this.drizzle.query.users.findFirst({
+      where: (users, { eq }) => eq(users.slug, slug),
     })
 
     return raw ? DrizzleAccountMapper.toDomain(raw) : null

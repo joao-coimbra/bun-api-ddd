@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-export const user = pgTable("user", {
+export const users = pgTable("users", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => Bun.randomUUIDv7()),
@@ -13,5 +13,5 @@ export const user = pgTable("user", {
   updatedAt: timestamp("updated_at").defaultNow(),
 })
 
-export type DrizzleUser = typeof user.$inferSelect
-export type DrizzleUserInsert = typeof user.$inferInsert
+export type DrizzleUser = typeof users.$inferSelect
+export type DrizzleUserInsert = typeof users.$inferInsert

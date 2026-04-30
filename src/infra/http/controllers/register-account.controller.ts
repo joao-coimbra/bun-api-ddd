@@ -4,11 +4,32 @@ import { makeRegisterAccount } from "../factories/make-register-account.factory"
 import { AccountPresenter } from "../presenters/account.presenter"
 
 const bodySchema = t.Object({
-  name: t.String(),
-  username: t.String(),
-  email: t.String(),
-  slug: t.String().optional(),
-  password: t.String(),
+  name: t.String({
+    minLength: 3,
+    description: "Account name (minimum 3 characters)",
+    example: "John Doe",
+  }),
+  username: t.String({
+    minLength: 3,
+    description: "Account username (minimum 3 characters)",
+    example: "john.doe",
+  }),
+  email: t.String({
+    format: "email",
+    description: "Account email",
+    example: "john.doe@example.com",
+  }),
+  slug: t.Optional(
+    t.String({
+      description: "Account slug",
+      example: "john-doe-slug",
+    })
+  ),
+  password: t.String({
+    minLength: 8,
+    description: "Account password (minimum 8 characters)",
+    example: "s3cr3t-p4ssw0rd",
+  }),
 })
 
 const response201Schema = t.Object({
@@ -25,9 +46,9 @@ export const registerAccountController = new Elysia().use(databasePlugin).post(
   async ({ db, body, set }) => {
     const { name, username, email, slug, password } = body
 
-    const registerAccountUseCase = makeRegisterAccount({ db })
+    const registerAccount = makeRegisterAccount({ db })
 
-    const result = await registerAccountUseCase.execute({
+    const result = await registerAccount.execute({
       name,
       username,
       email,

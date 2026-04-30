@@ -18,12 +18,22 @@ export const app = new Elysia()
           version: "1.0.0",
           description: "API for the Bun DDD API Template platform",
         },
+        components: {
+          securitySchemes: {
+            bearerAuth: {
+              type: "http",
+              scheme: "bearer",
+              bearerFormat: "JWT",
+            },
+          },
+        },
       },
       exclude: {
         paths: ["/health"],
       },
     })
   )
+  .head("/health", "OK")
   .use(httpModule)
 
 export type App = typeof app

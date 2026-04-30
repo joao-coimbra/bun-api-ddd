@@ -1,7 +1,7 @@
 import { Elysia } from "elysia"
-import { exampleController } from "./controllers/example.controller"
+import { authenticateAccountController } from "./controllers/authenticate-account.controller"
 import { registerAccountController } from "./controllers/register-account.controller"
 
 export const httpModule = new Elysia()
-  .use(exampleController)
   .use(registerAccountController)
+  .use(authenticateAccountController)
