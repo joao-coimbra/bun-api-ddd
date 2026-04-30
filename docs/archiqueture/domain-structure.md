@@ -14,3 +14,9 @@ This template ships **two** illustrative contexts: `example` (events, subscriber
 ## Practical guideline
 
 As the project grows, new domains should be added as independent contexts instead of extending a single generic domain bucket.
+
+## Further reading
+
+- **Identity bounded context (reference):** [`identity-bounded-context.md`](identity-bounded-context.md).
+- Layering and file placement: [`CLAUDE.md`](../../CLAUDE.md) (repository root) and [`src/CLAUDE.md`](../../src/CLAUDE.md).
+- Identity development playbook: [`src/domain/identity/CLAUDE.md`](../../src/domain/identity/CLAUDE.md).
