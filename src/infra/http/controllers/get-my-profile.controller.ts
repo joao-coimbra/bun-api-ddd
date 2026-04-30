@@ -5,12 +5,21 @@ import { makeGetMyProfile } from "../factories/make-get-my-profile.factory"
 import { AccountPresenter } from "../presenters/account.presenter"
 
 const response200Schema = t.Object({
-  id: t.String({ description: "Account ID" }),
-  name: t.String({ description: "Account name" }),
-  username: t.String({ description: "Account username" }),
-  email: t.String({ description: "Account email" }),
-  slug: t.String({ description: "Account slug" }),
-  createdAt: t.String({ description: "Account creation date" }),
+  id: t.String({
+    description: "Account ID",
+    example: "123e4567-e89b-12d3-a456-426614174000",
+  }),
+  name: t.String({ description: "Account name", example: "John Doe" }),
+  username: t.String({ description: "Account username", example: "john.doe" }),
+  email: t.String({
+    description: "Account email",
+    example: "john.doe@example.com",
+  }),
+  slug: t.String({ description: "Account slug", example: "john-doe" }),
+  createdAt: t.String({
+    description: "Account creation date",
+    example: "2021-01-01T00:00:00.000Z",
+  }),
 })
 
 export const getMyProfileController = new Elysia()

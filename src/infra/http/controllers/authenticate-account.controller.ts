@@ -8,7 +8,7 @@ const bodySchema = t.Object({
   email: t.String({
     format: "email",
     description: "Registered account email",
-    example: "john.doe@hospital.com",
+    example: "john.doe@example.com",
   }),
   password: t.String({
     minLength: 8,
@@ -18,7 +18,10 @@ const bodySchema = t.Object({
 })
 
 const response200Schema = t.Object({
-  accessToken: t.String(),
+  accessToken: t.String({
+    example:
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+  }),
 })
 
 export const authenticateAccountController = new Elysia({
