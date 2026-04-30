@@ -1,4 +1,4 @@
-import { type Either, left, right } from "archstone/core"
+import { type Either, left, type Nothing, nothing, right } from "archstone/core"
 import type { UseCase } from "archstone/domain/application"
 import { Account } from "../../enterprise/entities/account.entity"
 import { Slug } from "../../enterprise/entities/value-objects/slug.vo"
@@ -20,9 +20,7 @@ export type RegisterAccountUseCaseResponse = Either<
   | AccountWithSameSlugAlreadyExistsError
   | AccountWithSameUsernameAlreadyExistsError
   | AccountWithSameEmailAlreadyExistsError,
-  {
-    account: Account
-  }
+  Nothing
 >
 
 export class RegisterAccountUseCase
@@ -74,6 +72,6 @@ export class RegisterAccountUseCase
 
     await this.accountRepository.create(account)
 
-    return right({ account })
+    return right(nothing())
   }
 }

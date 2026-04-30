@@ -1,6 +1,6 @@
 import type { Optional, UniqueEntityId } from "archstone/core"
 import { AggregateRoot } from "archstone/domain/enterprise"
-import type { Slug } from "./value-objects/slug.vo"
+import { Slug } from "./value-objects/slug.vo"
 
 export interface AccountProps {
   name: string
@@ -42,14 +42,14 @@ export class Account extends AggregateRoot<AccountProps> {
   }
 
   static create(
-    props: Optional<AccountProps, "createdAt">,
+    props: Optional<AccountProps, "slug" | "createdAt">,
     id?: UniqueEntityId
   ) {
     const account = new Account(
       {
         ...props,
+        slug: props.slug ?? Slug.createFromText(props.name),
         createdAt: props.createdAt ?? new Date(),
-        updatedAt: props.updatedAt ?? null,
       },
       id
     )
