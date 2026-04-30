@@ -69,7 +69,7 @@ export const authenticateAccountController = new Elysia({
         }),
       },
       detail: {
-        tags: ["Auth"],
+        tags: ["Authentication"],
         summary: "Authenticate",
         description:
           "Exchange email and password for access and refresh tokens.",
