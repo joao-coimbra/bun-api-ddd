@@ -14,7 +14,9 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@elysiajs/bearer": "^1.4.4",
     "@elysiajs/cors": "^1.4.2",
+    "@elysiajs/jwt": "^1.4.2",
     "@elysiajs/openapi": "^1.4.15",
     "archstone": "^1.5.4",
     "drizzle-orm": "^0.45.2",

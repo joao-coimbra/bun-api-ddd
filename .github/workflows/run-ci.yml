@@ -40,8 +40,6 @@ jobs:
   e2e:
     name: E2E tests
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: postgresql://docker:docker@localhost:5432/careminder
     services:
       postgres:
         image: postgres:17-alpine
