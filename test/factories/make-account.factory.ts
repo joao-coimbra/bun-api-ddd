@@ -4,7 +4,6 @@ import {
   Account,
   type AccountProps,
 } from "@/domain/identity/enterprise/entities/account.entity"
-import { Slug } from "@/domain/identity/enterprise/entities/value-objects/slug.vo"
 import { app } from "@/infra/app"
 import type { DrizzleClient } from "@/infra/database/drizzle/client"
 import { db } from "@/infra/database/drizzle/client"
@@ -20,7 +19,6 @@ export function makeAccount(
       name: faker.person.fullName(),
       username: faker.internet.username(),
       email: faker.internet.email(),
-      slug: Slug.create(faker.lorem.slug()),
       passwordHash: "hashed-secret",
       ...override,
     },
