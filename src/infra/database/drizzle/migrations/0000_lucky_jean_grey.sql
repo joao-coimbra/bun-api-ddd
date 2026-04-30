@@ -1,13 +1,3 @@
-CREATE TABLE "example" (
-	"id" text PRIMARY KEY NOT NULL,
-	"name" text NOT NULL,
-	"description" text NOT NULL,
-	"slug" text NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now(),
-	CONSTRAINT "example_slug_unique" UNIQUE("slug")
-);
---> statement-breakpoint
 CREATE TABLE "users" (
 	"id" text PRIMARY KEY NOT NULL,
 	"name" text NOT NULL,
