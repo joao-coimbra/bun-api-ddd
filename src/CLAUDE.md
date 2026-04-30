@@ -38,12 +38,12 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 
 1. @CLAUDE.md (root) — commands, global conventions, `archstone` import cheatsheet
 2. @src/CLAUDE.md — layer dependency rules and “where new code goes” (**this file**)
-3. @docs/archiqueture/domain-structure.md — why contexts are separate; **permanent vs illustrative** contexts (`identity` vs `example`)
+3. @docs/archiqueture/domain-structure.md — why contexts are separate; **`identity`** as the shipped reference context
 4. @src/domain/CLAUDE.md — bounded-context layout and hard rules (entities, use cases, repos, events)
 5. **`src/domain/<context>/CLAUDE.md`** — playbook for the product area you are changing  
-   - **`identity`** (permanent reference): @src/domain/identity/CLAUDE.md — accounts, auth, crypto ports; extend here rather than duplicating a second “user” context.  
-   - **`example`** (illustrative): patterns for events, subscribers, `WatchedList`; no dedicated CLAUDE unless it grows. New product areas should get their **own** folder + `CLAUDE.md`, modeled on **`identity`**, not on growing **`example`**.
-6. @src/infra/CLAUDE.md — HTTP controllers, factories, presenters, Drizzle, `env/`, JWT/hashing adapters
+   - **`identity`** (permanent reference): @src/domain/identity/CLAUDE.md — accounts, auth, crypto ports; extend here for auth/account features.  
+   - **New contexts:** add `src/domain/<new>/CLAUDE.md`, model folder layout on **`identity`**, and use @src/domain/CLAUDE.md for events, subscribers, and repository rules when you need them.
+6. @src/infra/CLAUDE.md — HTTP, Drizzle, env, cryptography wiring; **plugin playbooks:** @src/infra/database/CLAUDE.md, @src/infra/cryptography/jwt/CLAUDE.md, @src/infra/auth/CLAUDE.md
 7. @src/core/CLAUDE.md — `AppError` hierarchy and other framework-agnostic primitives
 8. @test/CLAUDE.md — factories, in-memory repositories, helpers, e2e preload (`run-e2e.ts`, `setup-e2e.ts`)
 
@@ -53,12 +53,16 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 |----------|-----------------|
 | Wiring a route, DB, or env | 1–2, 6, then 4–5 for the affected context |
 | Adding a use case / entity / VO | 1–2, 4–5; 7 if you introduce a new shared error shape |
-| Copy-pasting DDD event/WatchedList patterns | 1–2, 4, `example` source, @test/CLAUDE.md for in-memory repo dispatch rules |
+| Copy-pasting DDD event/WatchedList patterns | 1–2, 4, @src/domain/CLAUDE.md (events/subscribers), @test/CLAUDE.md for in-memory repo dispatch rules |
 | Writing unit or e2e specs | 1, 8; spec file stays next to `src/` source |
-| Onboarding only on “where docs live” | 1–3, then skim tier 5 for **`identity`** |
+| First-time setup (env, Docker, migrate, e2e) | 1–2, @docs/archiqueture/getting-started.md |
+| Forking this repo for a new API | @docs/archiqueture/new-project-from-template.md + tier 1–2 |
 
 ### Long-form reference
 
+- @docs/archiqueture/README.md — index of architecture markdown.
+- @docs/archiqueture/getting-started.md — prerequisites, env table, Postgres, OpenAPI, troubleshooting.
+- @docs/archiqueture/new-project-from-template.md — checklist when cloning for a real product.
 - @docs/archiqueture/identity-bounded-context.md — HTTP surface (`/accounts`, `/sessions`), JWT/cookie behavior, Drizzle `users` map (companion to @src/domain/identity/CLAUDE.md).
 
 ## Imports inside `src/`

@@ -22,27 +22,27 @@ src/
   domain/    bounded contexts; one folder per context (see domain/identity/CLAUDE.md for identity)
   infra/     runtime adapters (http, database, cryptography, env, server/app)
 test/        test scaffolding only — factories, in-memory repos, helpers (e2e preload optional)
-docs/        long-form docs (architecture rationale, ADRs)
+docs/        see docs/archiqueture/README.md (index: getting-started, new-project checklist, BC reference)
 ```
 
 `test/` contains **helpers only**. Spec files live next to the source they cover as `<file>.spec.ts`. Integration specs use `*.e2e-spec.ts`. See @src/CLAUDE.md and @test/CLAUDE.md.
 
 ## Documentation hierarchy
 
-Stacked **CLAUDE.md** files are the primary playbook; **`docs/archiqueture/`** holds longer reference (especially **`identity`**, which is the permanent product context—unlike **`example`**, which is pattern-only). Full order and task shortcuts: **@src/CLAUDE.md** (section *Memory / docs hierarchy*).
+Stacked **CLAUDE.md** files are the primary playbook; **`docs/archiqueture/`** holds longer reference (especially **`identity`**, the shipped product context). Full order and task shortcuts: **@src/CLAUDE.md** (section *Memory / docs hierarchy*).
 
 | Tier | Doc | Role |
 |------|-----|------|
 | 1 | @CLAUDE.md (root) | Commands, path aliases, naming, `archstone` imports, global “do not” |
 | 2 | @src/CLAUDE.md | Dependency rule `infra → domain → core`, where new code lives |
-| 3 | @docs/archiqueture/domain-structure.md | Why bounded contexts are separate folders |
+| 3 | @docs/archiqueture/domain-structure.md | Why bounded contexts are separate folders (onboarding env/DB: @docs/archiqueture/getting-started.md) |
 | 4 | @src/domain/CLAUDE.md | Context folder layout, use cases, repos, events |
-| 5 | `src/domain/<context>/CLAUDE.md` | Per-context rules; **`identity`** is the long-lived reference (`AuthenticateAccount`, JWT, `users`). **`example`** is illustrative (events, `WatchedList`)—reuse patterns, not as second core product |
-| 6 | @src/infra/CLAUDE.md | HTTP, Drizzle, env, cryptography wiring |
+| 5 | `src/domain/<context>/CLAUDE.md` | Per-context rules; **`identity`** is the long-lived reference (`AuthenticateAccount`, JWT, `users`). New domains copy that layout; use `src/domain/CLAUDE.md` for events/subscribers when adding them |
+| 6 | @src/infra/CLAUDE.md (+ plugin CLAUDE.md under `database/`, `cryptography/jwt/`, `auth/`) | HTTP, Drizzle, env, cryptography; per-plugin playbooks |
 | 7 | @src/core/CLAUDE.md | `AppError` and shared primitives |
 | 8 | @test/CLAUDE.md | Factories, in-memory repos, e2e harness (never `*.spec.ts` here) |
 
-**Long-form:** @docs/archiqueture/identity-bounded-context.md — routes, cookies, schema map alongside the identity playbook.
+**Long-form:** @docs/archiqueture/README.md (index) · @docs/archiqueture/getting-started.md · @docs/archiqueture/new-project-from-template.md · @docs/archiqueture/identity-bounded-context.md (routes, cookies, `users` map — companion to @src/domain/identity/CLAUDE.md).
 
 **Fast paths:** HTTP/DB/env only → 1–2, 6, then domain context 4–5. New use case or entity → 1–2, 4–5 (and 7 if new error bases). Tests only → 1, 8, colocated spec under `src/`.
 

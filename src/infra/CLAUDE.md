@@ -17,13 +17,20 @@ Runtime and integration layer. This is where frameworks, drivers, and adapters l
 
 ```
 src/infra/
-  app.ts
+  app.ts            CORS + OpenAPI + /health + httpModule (see HTTP conventions below)
   server.ts
   env/
     index.ts
+  auth/
+    auth.plugin.ts
+    CLAUDE.md      playbook: bearer macro, composition with jwt + database plugins
   cryptography/
     bun-hasher.ts
-    jwt/             Encrypter adapter over a small JwtSigner port
+    jwt/
+      jwt.plugin.ts
+      jwt-encrypter.ts
+      types.ts
+      CLAUDE.md    playbook: access/refresh JWT plugin + encrypter adapter
   http/
     http.module.ts
     controllers/
@@ -32,6 +39,7 @@ src/infra/
   database/
     database.plugin.ts
     types.ts
+    CLAUDE.md      playbook: db decoration + Drizzle layout
     drizzle/
       client.ts
       schema/
@@ -39,6 +47,18 @@ src/infra/
       mappers/
       repositories/
 ```
+
+## Elysia plugins (playbooks)
+
+Each first-class plugin has a colocated **`CLAUDE.md`**:
+
+| Plugin | Playbook |
+|--------|----------|
+| `databasePlugin` | @src/infra/database/CLAUDE.md |
+| `jwtPlugin` | @src/infra/cryptography/jwt/CLAUDE.md |
+| `authPlugin` | @src/infra/auth/CLAUDE.md |
+
+`app.ts` composes **CORS** and **OpenAPI** inline (not separate `*.plugin.ts` files). When/if those move into dedicated modules, add a matching `CLAUDE.md` beside them the same way.
 
 ## HTTP conventions
 

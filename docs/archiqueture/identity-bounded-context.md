@@ -27,9 +27,10 @@ Reference for the **`identity`** bounded context (account registration, authenti
 | Use cases, errors, repository contract, crypto ports | `src/domain/identity/application/` (`register-account.use-case.ts`, `authenticate-account.use-case.ts`, …) |
 | HTTP (register) | `src/infra/http/controllers/register-account.controller.ts`, `make-register-account.factory.ts`, `account.presenter.ts` |
 | HTTP (auth) | `src/infra/http/controllers/authenticate-account.controller.ts`, `make-authenticate-account.factory.ts` |
-| JWT (Elysia + signing) | `src/infra/cryptography/jwt/` (`jwt.plugin.ts`, `jwt-encrypter.ts`, `types.ts`) |
+| Protected routes (bearer) | `src/infra/auth/auth.plugin.ts` — playbook: [`auth/CLAUDE.md`](../../src/infra/auth/CLAUDE.md) |
+| JWT (Elysia + signing) | `src/infra/cryptography/jwt/` (`jwt.plugin.ts`, `jwt-encrypter.ts`, `types.ts`) — playbook: [`jwt/CLAUDE.md`](../../src/infra/cryptography/jwt/CLAUDE.md) |
 | Hashing (Bun) | `src/infra/cryptography/bun-hasher.ts` |
-| Drizzle | `src/infra/database/drizzle/schema/users.ts`, `mappers/drizzle-account.mapper.ts`, `repositories/drizzle-account.repository.ts` |
+| Drizzle | `src/infra/database/drizzle/schema/users.ts`, `mappers/drizzle-account.mapper.ts`, `repositories/drizzle-account.repository.ts` — DB plugin: [`database/CLAUDE.md`](../../src/infra/database/CLAUDE.md) |
 
 The relational table is named **`users`** in Drizzle; the domain concept remains **Account**.
 
@@ -51,6 +52,9 @@ Controllers call `result.getOrThrow()` on the use-case `Either`. Expected failur
 
 ## Related
 
-- Domain-wide structure and **identity vs example**: [`domain-structure.md`](domain-structure.md).
+- [Getting started](getting-started.md) — env, Postgres, tests.
+- [New API from this template](new-project-from-template.md) — fork checklist.
+- [Architecture doc index](README.md).
+- Domain-wide structure: [`domain-structure.md`](domain-structure.md).
 - Full documentation stack (infra / core / test tiers, task shortcuts): [`src/CLAUDE.md`](../../src/CLAUDE.md) — *Memory / docs hierarchy*.
-- Adding a new context: copy `src/domain/[bounded-context]/` and follow [`src/domain/CLAUDE.md`](../../src/domain/CLAUDE.md); model layout on **`identity`**, patterns from **`example`**.
+- Adding a new context: copy `src/domain/[bounded-context]/` and follow [`src/domain/CLAUDE.md`](../../src/domain/CLAUDE.md); model layout on **`identity`**, use that file’s sections for events and subscribers when needed.

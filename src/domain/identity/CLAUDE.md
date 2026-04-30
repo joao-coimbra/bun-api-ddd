@@ -2,7 +2,7 @@
 
 Bounded context for **accounts**: registration, authentication, credentials (hashing contracts), and public identifiers (`slug`, `username`, `email`).
 
-In this template, **`identity`** is the **permanent** reference (contrast **`example`**, which is pattern-only). Treat it as the home for account and auth evolution; @docs/archiqueture/domain-structure.md explains that split.
+In this template, **`identity`** is the **canonical** bounded context for accounts and auth; treat it as the home for that evolution. For adding **other** domains, see @docs/archiqueture/domain-structure.md.
 
 ## Scope
 
@@ -16,7 +16,7 @@ In this template, **`identity`** is the **permanent** reference (contrast **`exa
 
 ## Cross-layer wiring
 
-- Infra implements `AccountRepository` (Drizzle) and hashing (`BunHasher` under `src/infra/cryptography/`). JWT signing for tokens uses `JwtEncrypter` + `jwtPlugin` (`Elysia` instance with `accessToken` / `refreshToken` signers).
+- Infra implements `AccountRepository` (Drizzle) and hashing (`BunHasher` under `src/infra/cryptography/`). JWT signing for tokens uses `JwtEncrypter` + `jwtPlugin` — playbook @src/infra/cryptography/jwt/CLAUDE.md. DB decoration: @src/infra/database/CLAUDE.md. Bearer-protected routes: @src/infra/auth/CLAUDE.md.
 - HTTP: `register-account.controller` (`POST /accounts`), `authenticate-account.controller` (`POST /sessions`). Controllers may call `result.getOrThrow()` on the use case; map `AppError` / `Either` failures to status codes in a shared Elysia error hook if you need structured 4xx responses.
 - See @src/infra/CLAUDE.md for HTTP and database layout.
 
