@@ -31,6 +31,10 @@ export const getMyProfileController = new Elysia()
       auth: true,
       response: {
         200: response200Schema,
+        401: t.Object({
+          error: t.String(),
+          code: t.Literal(401),
+        }),
       },
       detail: {
         tags: ["Accounts"],
