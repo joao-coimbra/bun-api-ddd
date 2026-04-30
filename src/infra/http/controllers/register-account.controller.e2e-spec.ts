@@ -17,46 +17,34 @@ describe("Register Account (E2E)", () => {
     api = treaty(app)
   })
 
-  describe("[POST] /accounts 201", () => {
+  describe("[POST] /accounts 204", () => {
     beforeEach(async () => {
       await db.delete(schema.users)
     })
 
-    test("register a new account without slug", async () => {
+    test("return 204 when registering without slug", async () => {
       const response = await api.accounts.post({
         name: "John Doe",
-        username: "john.doe",
-        email: "john.doe@example.com",
-        password: "123456",
+        username: "john",
+        email: "john@example.com",
+        password: "password12",
       })
 
-      expect(response.status).toBe(201)
-      expect(response.data).toMatchObject({
-        id: expect.any(String),
-        name: "John Doe",
-        username: "john.doe",
-        email: "john.doe@example.com",
-        slug: "john-doe",
-      })
+      expect(response.status).toBe(204)
+      expect(response.data ?? "").toBe("")
     })
 
-    test("register a new account with slug", async () => {
+    test("return 204 when registering with explicit slug", async () => {
       const response = await api.accounts.post({
-        name: "John Doe",
-        username: "john.doe",
-        email: "john.doe@example.com",
-        slug: "john-doe",
-        password: "123456",
+        name: "Jane Roe",
+        username: "jane",
+        email: "jane@example.com",
+        slug: "jane-slug",
+        password: "password12",
       })
 
-      expect(response.status).toBe(201)
-      expect(response.data).toMatchObject({
-        id: expect.any(String),
-        name: "John Doe",
-        username: "john.doe",
-        email: "john.doe@example.com",
-        slug: "john-doe",
-      })
+      expect(response.status).toBe(204)
+      expect(response.data ?? "").toBe("")
     })
   })
 
@@ -65,47 +53,70 @@ describe("Register Account (E2E)", () => {
       await db.delete(schema.users)
     })
 
-    test("reject registration when username already exists", async () => {
+    test("return 409 when username already exists", async () => {
       await accountFactory.makeDrizzleAccount({
-        username: "john.doe",
+        username: "john",
+        email: "existing@example.com",
       })
 
       const response = await api.accounts.post({
         name: "John Doe",
-        username: "john.doe",
-        email: "john.doe@example.com",
-        password: "123456",
+        username: "john",
+        email: "new@example.com",
+        slug: "new-slug",
+        password: "password12",
       })
 
       expect(response.status).toBe(409)
     })
 
-    test("reject registration when email already exists", async () => {
+    test("return 409 when email already exists", async () => {
       await accountFactory.makeDrizzleAccount({
-        email: "john.doe@example.com",
+        email: "john@example.com",
       })
 
       const response = await api.accounts.post({
-        name: "John Doe",
-        username: "john.doe",
-        email: "john.doe@example.com",
-        password: "123456",
+        name: "Other Person",
+        username: "other",
+        email: "john@example.com",
+        slug: "other-slug",
+        password: "password12",
       })
 
       expect(response.status).toBe(409)
     })
 
-    test("reject registration when slug already exists", async () => {
+    test("return 409 when slug already exists", async () => {
       await accountFactory.makeDrizzleAccount({
-        slug: Slug.create("john-doe"),
+        username: "existing",
+        email: "existing@example.com",
+        slug: Slug.create("taken-slug"),
       })
 
       const response = await api.accounts.post({
         name: "John Doe",
-        username: "john.doe",
-        email: "john.doe@example.com",
+        username: "john",
+        email: "john@example.com",
+        slug: "taken-slug",
+        password: "password12",
+      })
+
+      expect(response.status).toBe(409)
+    })
+
+    test("return 409 when slug matches another account default from name", async () => {
+      await accountFactory.makeDrizzleAccount({
+        name: "John Doe",
+        username: "first",
+        email: "first@example.com",
+      })
+
+      const response = await api.accounts.post({
+        name: "John Doe",
+        username: "second",
+        email: "second@example.com",
         slug: "john-doe",
-        password: "123456",
+        password: "password12",
       })
 
       expect(response.status).toBe(409)
