@@ -2,6 +2,8 @@
 
 **This folder contains test scaffolding only — never tests themselves.** Spec files (`<file>.spec.ts`) live next to the source they cover under `src/`.
 
+**Documentation tier:** layer **8** in @src/CLAUDE.md (*Memory / docs hierarchy*). Read after you know specs are colocated under `src/`; use this file for factories, in-memory repos, `waitFor`, and the e2e preload (`setup-e2e.ts`, `run-e2e.ts`).
+
 ## Layout
 
 ```

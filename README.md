@@ -14,7 +14,7 @@ TypeScript API template based on Bun and Domain-Driven Design (DDD), with bounde
   - typed env loader (`zod`)
 - Reference bounded contexts:
   - **`example`** — aggregate (`Example`), value object (`Slug`), use case with `Either`, domain events and subscribers, in-memory test setup.
-  - **`identity`** — `Account`, `RegisterAccount`, crypto ports, Drizzle `user` table + migrations, `POST /accounts`. Reference: [`docs/archiqueture/identity-bounded-context.md`](docs/archiqueture/identity-bounded-context.md); playbook: [`src/domain/identity/CLAUDE.md`](src/domain/identity/CLAUDE.md).
+  - **`identity`** — `Account`, `RegisterAccount`, `AuthenticateAccount`, crypto ports, Drizzle `users` table + migrations, `POST /accounts`, `POST /sessions` (access token in body, refresh token in httpOnly cookie). Reference: [`docs/archiqueture/identity-bounded-context.md`](docs/archiqueture/identity-bounded-context.md); playbook: [`src/domain/identity/CLAUDE.md`](src/domain/identity/CLAUDE.md).
 
 ## Tech stack
 

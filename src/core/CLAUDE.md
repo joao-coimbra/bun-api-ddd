@@ -2,6 +2,8 @@
 
 Framework-agnostic primitives shared across every bounded context. Today this layer contains only `errors/`; add new sub-folders (`utils/`, `types/`, `crypto/`, etc.) the first time a truly business-agnostic primitive is needed.
 
+**Documentation tier:** layer **7** in @src/CLAUDE.md (*Memory / docs hierarchy*). Use when adding or extending `AppError` subclasses and other shared primitives; domain-specific errors still live under `src/domain/<context>/application/…` and extend these bases (see @src/domain/CLAUDE.md).
+
 ## Hard rules
 
 - Zero imports from `@/domain/**` or `@/infra/**`.

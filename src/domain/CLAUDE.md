@@ -1,13 +1,15 @@
 # src/domain
 
-Business model, organized by **bounded context**. Every context is a self-contained subfolder. Use `[bounded-context]/` as the scaffold — see @src/domain/[bounded-context]/README.md and @docs/archiqueture/domain-structure.md for rationale.
+Business model, organized by **bounded context**. Every context is a self-contained subfolder. Use `src/domain/[bounded-context]/` as the scaffold. Rationale and growth guidelines: @docs/archiqueture/domain-structure.md. Add an optional `README.md` inside a context only when onboarding notes help; **`identity`** uses @src/domain/identity/CLAUDE.md instead.
 
 ## Documented contexts
 
-- **`identity`** (permanent reference) — deeper notes: @src/domain/identity/CLAUDE.md
-- **`example`** — pattern for domain events, subscribers, and `WatchedList`; no extra CLAUDE file unless it grows.
+- **`identity`** — **Permanent** product context (accounts, auth). Playbook: @src/domain/identity/CLAUDE.md. Long-form: @docs/archiqueture/identity-bounded-context.md. New auth/account features belong here.
+- **`example`** — **Illustrative** (events, subscribers, `WatchedList`). No `CLAUDE.md` unless it grows; patterns are meant to be lifted into **new** contexts, not to rival **`identity`** as the template’s main reference.
 
-Add a `CLAUDE.md` at `src/domain/<context>/CLAUDE.md` when a context gains enough rules to justify a dedicated playbook (imports, invariants, naming). Link it from this file.
+Add a `CLAUDE.md` at `src/domain/<context>/CLAUDE.md` when a context gains enough rules to justify a dedicated playbook (imports, invariants, naming). Link it from this file. See @docs/archiqueture/domain-structure.md for how **`identity`** vs **`example`** fits the template strategy.
+
+Stacked reading order for all layers (infra, core, test): @src/CLAUDE.md (*Memory / docs hierarchy*).
 
 ## Per-context layout
 

@@ -2,6 +2,8 @@
 
 Runtime and integration layer. This is where frameworks, drivers, and adapters live.
 
+**Documentation tier:** layer **6** in the stack in @src/CLAUDE.md (*Memory / docs hierarchy*). Read after @CLAUDE.md (root) and @src/CLAUDE.md; pair with the bounded-context playbook you are wiring (often @src/domain/identity/CLAUDE.md).
+
 ## Responsibility
 
 - Compose the app (`app.ts`) and runtime entrypoint (`server.ts`).

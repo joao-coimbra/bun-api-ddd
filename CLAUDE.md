@@ -27,7 +27,26 @@ docs/        long-form docs (architecture rationale, ADRs)
 
 `test/` contains **helpers only**. Spec files live next to the source they cover as `<file>.spec.ts`. Integration specs use `*.e2e-spec.ts`. See @src/CLAUDE.md and @test/CLAUDE.md.
 
-**CLAUDE.md chain:** root → `src/CLAUDE.md` → `src/domain/CLAUDE.md` → `src/domain/identity/CLAUDE.md` (for identity), plus `src/infra`, `src/core`, `test` as needed.
+## Documentation hierarchy
+
+Stacked **CLAUDE.md** files are the primary playbook; **`docs/archiqueture/`** holds longer reference (especially **`identity`**, which is the permanent product context—unlike **`example`**, which is pattern-only). Full order and task shortcuts: **@src/CLAUDE.md** (section *Memory / docs hierarchy*).
+
+| Tier | Doc | Role |
+|------|-----|------|
+| 1 | @CLAUDE.md (root) | Commands, path aliases, naming, `archstone` imports, global “do not” |
+| 2 | @src/CLAUDE.md | Dependency rule `infra → domain → core`, where new code lives |
+| 3 | @docs/archiqueture/domain-structure.md | Why bounded contexts are separate folders |
+| 4 | @src/domain/CLAUDE.md | Context folder layout, use cases, repos, events |
+| 5 | `src/domain/<context>/CLAUDE.md` | Per-context rules; **`identity`** is the long-lived reference (`AuthenticateAccount`, JWT, `users`). **`example`** is illustrative (events, `WatchedList`)—reuse patterns, not as second core product |
+| 6 | @src/infra/CLAUDE.md | HTTP, Drizzle, env, cryptography wiring |
+| 7 | @src/core/CLAUDE.md | `AppError` and shared primitives |
+| 8 | @test/CLAUDE.md | Factories, in-memory repos, e2e harness (never `*.spec.ts` here) |
+
+**Long-form:** @docs/archiqueture/identity-bounded-context.md — routes, cookies, schema map alongside the identity playbook.
+
+**Fast paths:** HTTP/DB/env only → 1–2, 6, then domain context 4–5. New use case or entity → 1–2, 4–5 (and 7 if new error bases). Tests only → 1, 8, colocated spec under `src/`.
+
+**One-line chain:** root → `src/CLAUDE.md` → `domain-structure.md` → `src/domain/CLAUDE.md` → context `CLAUDE.md` → `infra` / `core` / `test` as needed → `identity-bounded-context.md` for identity depth.
 
 ## Commands
 
