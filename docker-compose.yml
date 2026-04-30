@@ -1,13 +1,13 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: postgres
+    container_name: template-postgres
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: docker
       POSTGRES_PASSWORD: docker
-      POSTGRES_DB: careminder
+      POSTGRES_DB: template
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 
