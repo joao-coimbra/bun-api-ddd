@@ -21,7 +21,7 @@ describe("Authenticate Account (E2E)", () => {
       await db.delete(schema.users)
     })
 
-    test("returns tokens when email and password match a registered user", async () => {
+    test("return tokens when email and password match a registered user", async () => {
       const account = await accountFactory.makeDrizzleAccount({
         email: "jane@example.com",
         passwordHash: "secret-pass",
@@ -44,7 +44,7 @@ describe("Authenticate Account (E2E)", () => {
       await db.delete(schema.users)
     })
 
-    test("when email is unknown", async () => {
+    test("return 401 when email is unknown", async () => {
       const response = await api.sessions.post({
         email: "nobody@example.com",
         password: "any",
@@ -53,7 +53,7 @@ describe("Authenticate Account (E2E)", () => {
       expect(response.status).toBe(401)
     })
 
-    test("when password is wrong", async () => {
+    test("return 401 when password is wrong", async () => {
       const account = await accountFactory.makeDrizzleAccount({
         email: "jane@example.com",
         passwordHash: "secret-pass",

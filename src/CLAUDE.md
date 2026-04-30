@@ -74,3 +74,5 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 ## Tests
 
 Specs are colocated as `<file>.spec.ts` next to source. `*.e2e-spec.ts` is reserved for integration tests. Never put a spec under `test/`.
+
+**Naming:** `it("should …")` for use cases and typical unit tests; `test()` without a `should` prefix for value-object specs (`*.vo.spec.ts`) and all E2E files — @test/CLAUDE.md.

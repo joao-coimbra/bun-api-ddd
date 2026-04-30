@@ -71,6 +71,7 @@ The pre-commit hook runs `bun test` then `bun x ultracite fix` and re-stages mod
 ## Conventions
 
 - **Path aliases** (`tsconfig.json`): `@/*` → `./src/*`, `test/*` → `./test/*`. Use `test/...` (no `@`) when importing helpers from a spec.
+- **`bun:test` titles:** use **`it("should …")`** for use cases and most unit specs; use **`test()`** (no `should` prefix) for `*.vo.spec.ts` and for **`*.e2e-spec.ts`** — see @test/CLAUDE.md.
 - **File names**: kebab-case with role suffix — `<name>.entity.ts`, `<name>.vo.ts`, `<name>.repository.ts`, `<name>.use-case.ts`, `<name>.error.ts`, `<subject>-<verb>.event.ts`, `on-<subject>-<verb>.subscriber.ts`, `<entity>-list.entity.ts`, `make-<entity>.factory.ts`, `in-memory-<entity>.repository.ts`.
 - **Class names**: PascalCase with matching suffix — `<Name>UseCase`, `<Name>Repository` (interface), `<Subject><Verb>Event`, `On<Subject><Verb>`, `<Name>Error`. One class per file.
 - **Imports**: direct file imports only — never barrel files (`index.ts`). `import type` for type-only imports (required by `verbatimModuleSyntax`).

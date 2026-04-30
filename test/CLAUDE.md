@@ -22,6 +22,14 @@ test/
 
 Integration spec files still live under `src/` with the `*.e2e-spec.ts` suffix.
 
+## `bun:test` naming (colocated specs under `src/`)
+
+| Kind | API | Title style |
+|------|-----|-------------|
+| Unit — use cases, subscribers, most domain specs | `it()` from `bun:test` | Start with **`should …`** (behavioral wording). |
+| Unit — **value object** specs (`*.vo.spec.ts` in this template) | `test()` from `bun:test` | **No** `should` prefix — use direct statements (e.g. `creates…`, `normalizes…`). Reference: `slug.vo.spec.ts`. |
+| E2E — `*.e2e-spec.ts` | `test()` from `bun:test` | Plain English; **no** required `should` prefix. |
+
 ## Hard rules
 
 - Nothing under `src/` may import from `test/`. Production code never depends on test scaffolding.
@@ -75,6 +83,20 @@ Expose `items` as the read surface for assertions (`expect(repo.items).toHaveLen
 
 ## Spec patterns (write specs under `src/`, but keep them consistent with these recipes)
 
+### Value object spec (`test`, no `should` prefix)
+
+```ts
+import { describe, expect, test } from "bun:test"
+import { <Name> } from "./<name>.vo"
+
+describe("<Name>", () => {
+  test("creates a value from valid input", () => {
+    const vo = <Name>.create("…")
+    expect(vo.value).toBe("…")
+  })
+})
+```
+
 ### Use case spec
 
 ```ts
@@ -86,14 +108,14 @@ beforeEach(() => {
   sut = new <Name>UseCase(repo)
 })
 
-it("succeeds on the happy path", async () => {
+it("should succeed on the happy path", async () => {
   const result = await sut.execute({ /* ... */ })
   expect(result.isRight()).toBeTrue()
   const { <result> } = result.getOrThrow()
   // assertions on <result> and repo.items
 })
 
-it("returns <Error> when <condition>", async () => {
+it("should return <Error> when <condition>", async () => {
   const result = await sut.execute({ /* ... */ })
   result.match({
     left: (error) => {
@@ -117,7 +139,7 @@ beforeEach(() => {
   new On<Subject><Verb>(repo) // constructor registers the subscription
 })
 
-it("reacts to <Event>", async () => {
+it("should react to <Event>", async () => {
   await repo.create(make<Entity>())
   await waitFor(() => expect(saveSpy).toHaveBeenCalled())
 })

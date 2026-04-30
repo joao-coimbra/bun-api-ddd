@@ -29,7 +29,7 @@ describe("RegisterAccountUseCase", () => {
     sut = new RegisterAccountUseCase(inMemoryAccountRepository, fakeHasher)
   })
 
-  it("registra conta quando slug, username e email são novos", async () => {
+  it("should register account when slug, username, and email are new", async () => {
     const result = await sut.execute({
       name: "Ada Lovelace",
       username: "ada",
@@ -50,8 +50,8 @@ describe("RegisterAccountUseCase", () => {
     expect(inMemoryAccountRepository.items).toHaveLength(1)
   })
 
-  it("deriva o slug a partir do name quando slug não é enviado", async () => {
-    const name = "Título do fórum de exemplo"
+  it("should derive slug from name when slug is omitted", async () => {
+    const name = "Example forum title"
 
     const result = await sut.execute({
       name,
@@ -67,9 +67,9 @@ describe("RegisterAccountUseCase", () => {
     expect(inMemoryAccountRepository.items).toHaveLength(1)
   })
 
-  it("normaliza o slug com trim e lowercase antes de persistir", async () => {
+  it("should normalize slug with trim and lowercase before persisting", async () => {
     const result = await sut.execute({
-      name: "Qualquer",
+      name: "Any",
       username: "u1",
       email: "u1@example.test",
       slug: "  MixedCase-Slug  ",
@@ -80,7 +80,7 @@ describe("RegisterAccountUseCase", () => {
     expect(result.getOrThrow().account.slug).toBe("mixedcase-slug")
   })
 
-  it("retorna AccountWithSameSlugAlreadyExistsError quando o slug já existe", async () => {
+  it("should return AccountWithSameSlugAlreadyExistsError when slug already exists", async () => {
     const slug = "taken-slug"
     const existing = makeAccount({ slug: Slug.create(slug) })
 
@@ -102,7 +102,7 @@ describe("RegisterAccountUseCase", () => {
     expect(inMemoryAccountRepository.items).toHaveLength(1)
   })
 
-  it("retorna AccountWithSameUsernameAlreadyExistsError quando o username já existe", async () => {
+  it("should return AccountWithSameUsernameAlreadyExistsError when username already exists", async () => {
     const username = "ada"
     const existing = makeAccount({ username })
 
@@ -126,7 +126,7 @@ describe("RegisterAccountUseCase", () => {
     expect(inMemoryAccountRepository.items).toHaveLength(1)
   })
 
-  it("retorna AccountWithSameEmailAlreadyExistsError quando o email já existe", async () => {
+  it("should return AccountWithSameEmailAlreadyExistsError when email already exists", async () => {
     const email = "ada@example.test"
     const existing = makeAccount({ email })
 
@@ -148,7 +148,7 @@ describe("RegisterAccountUseCase", () => {
     expect(inMemoryAccountRepository.items).toHaveLength(1)
   })
 
-  it("falha primeiro por slug quando slug e username já existem em contas diferentes", async () => {
+  it("should fail on slug first when slug and username are taken on different accounts", async () => {
     const takenSlug = "slug-a"
     const takenUsername = "user-b"
 

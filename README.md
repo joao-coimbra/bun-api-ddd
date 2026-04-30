@@ -172,8 +172,8 @@ There is **no** generic `[bounded-context]/README.md` scaffold file; follow [`sr
 
 ## Tests & CI
 
-- **Unit / domain:** `bun test` picks up `*.spec.ts` next to sources.
-- **E2E:** `bun run test:e2e` uses `.env.test` and isolated DB schema; see [`test/CLAUDE.md`](test/CLAUDE.md).
+- **Unit / domain:** `bun test` picks up `*.spec.ts` next to sources. Use **`it("should …")`** for use cases and typical unit tests; **`*.vo.spec.ts`** uses **`test()`** without a `should` prefix on titles ([`test/CLAUDE.md`](test/CLAUDE.md)).
+- **E2E:** `bun run test:e2e` uses `.env.test` and isolated DB schema; E2E files use **`test()`** ([`test/CLAUDE.md`](test/CLAUDE.md)).
 - **GitHub Actions** (`.github/workflows/run-ci.yml`): `check`, `bun test`, `test:e2e` with Postgres **17** service.
 
 ## Documentation

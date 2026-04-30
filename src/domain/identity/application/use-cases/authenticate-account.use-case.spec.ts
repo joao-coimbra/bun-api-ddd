@@ -36,7 +36,7 @@ describe("AuthenticateAccountUseCase", () => {
     )
   })
 
-  it("retorna access e refresh token quando email e senha conferem", async () => {
+  it("should return access and refresh tokens when email and password match", async () => {
     const email = "ada@example.test"
     const password = "plain-secret"
     const passwordHash = await fakeHasher.hash(password)
@@ -55,7 +55,7 @@ describe("AuthenticateAccountUseCase", () => {
     expect(refreshToken).toBe(expectedSub)
   })
 
-  it("retorna WrongCredentialsError quando o email não existe", async () => {
+  it("should return WrongCredentialsError when email does not exist", async () => {
     const result = await sut.execute({
       email: "missing@example.test",
       password: "any",
@@ -67,7 +67,7 @@ describe("AuthenticateAccountUseCase", () => {
     })
   })
 
-  it("retorna WrongCredentialsError quando a senha é inválida", async () => {
+  it("should return WrongCredentialsError when password is invalid", async () => {
     const email = "ada@example.test"
     const account = makeAccount({
       email,

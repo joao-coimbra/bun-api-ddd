@@ -22,8 +22,8 @@ In this template, **`identity`** is the **canonical** bounded context for accoun
 
 ## Tests
 
-- Use case specs: `application/use-cases/register-account.use-case.spec.ts`, `authenticate-account.use-case.spec.ts`.
-- VO specs: enterprise `slug.vo.spec.ts`.
+- Use case specs: `application/use-cases/register-account.use-case.spec.ts`, `authenticate-account.use-case.spec.ts`, `get-my-profile.use-case.spec.ts`.
+- VO specs: enterprise `slug.vo.spec.ts` — uses **`test()`** and titles **without** a `should` prefix (see @test/CLAUDE.md).
 - E2E: `src/infra/http/controllers/register-account.controller.e2e-spec.ts`, `authenticate-account.controller.e2e-spec.ts` (Postgres + `.env.test`).
 - Test doubles: `test/factories/make-account.factory.ts`, `test/repositories/in-memory-account.repository.ts`, `test/cryptography/fake-hasher.ts`.
 

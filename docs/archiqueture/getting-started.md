@@ -98,6 +98,8 @@ bun run dev
 | `bun test` | All `*.spec.ts` next to source (unit + use-case tests) |
 | `bun run test:e2e` | All `*.e2e-spec.ts` under `src/`; requires **Postgres** and `.env.test` (or equivalent env) |
 
+**Spec style:** use cases and most unit tests use **`it("should …")`**. Value-object specs (`*.vo.spec.ts`, e.g. `slug.vo.spec.ts`) and **E2E** files use **`test()`** with **no** `should` prefix on titles. Details: [`test/CLAUDE.md`](../../test/CLAUDE.md).
+
 E2E preload (`test/setup-e2e.ts`) creates an isolated Postgres **schema** per run, applies SQL migrations, and drops the schema in `afterAll`.
 
 ### Common issues

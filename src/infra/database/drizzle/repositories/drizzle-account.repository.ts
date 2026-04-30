@@ -13,6 +13,14 @@ export class DrizzleAccountRepository implements AccountRepository {
     await this.drizzle.insert(schema.users).values(raw)
   }
 
+  async findById(id: string): Promise<Account | null> {
+    const raw = await this.drizzle.query.users.findFirst({
+      where: (users, { eq }) => eq(users.id, id),
+    })
+
+    return raw ? DrizzleAccountMapper.toDomain(raw) : null
+  }
+
   async findByUsername(username: string): Promise<Account | null> {
     const raw = await this.drizzle.query.users.findFirst({
       where: (users, { eq }) => eq(users.username, username),

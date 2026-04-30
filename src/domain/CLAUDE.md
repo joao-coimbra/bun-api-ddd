@@ -89,4 +89,4 @@ src/domain/<context>/
 
 ## Tests
 
-Specs are colocated next to source. Test scaffolding (factories, in-memory repos, helpers) lives in `test/`. See @test/CLAUDE.md.
+Specs are colocated next to source. Test scaffolding (factories, in-memory repos, helpers) lives in `test/`. See @test/CLAUDE.md for **`it` vs `test`** and **`should`** title rules.

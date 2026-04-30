@@ -22,7 +22,7 @@ describe("Register Account (E2E)", () => {
       await db.delete(schema.users)
     })
 
-    test("should be able to register a new account without slug", async () => {
+    test("register a new account without slug", async () => {
       const response = await api.accounts.post({
         name: "John Doe",
         username: "john.doe",
@@ -40,7 +40,7 @@ describe("Register Account (E2E)", () => {
       })
     })
 
-    test("should be able to register a new account with slug", async () => {
+    test("register a new account with slug", async () => {
       const response = await api.accounts.post({
         name: "John Doe",
         username: "john.doe",
@@ -65,7 +65,7 @@ describe("Register Account (E2E)", () => {
       await db.delete(schema.users)
     })
 
-    test("should not be able to register a new account with same username", async () => {
+    test("reject registration when username already exists", async () => {
       await accountFactory.makeDrizzleAccount({
         username: "john.doe",
       })
@@ -80,7 +80,7 @@ describe("Register Account (E2E)", () => {
       expect(response.status).toBe(409)
     })
 
-    test("should not be able to register a new account with same email", async () => {
+    test("reject registration when email already exists", async () => {
       await accountFactory.makeDrizzleAccount({
         email: "john.doe@example.com",
       })
@@ -95,7 +95,7 @@ describe("Register Account (E2E)", () => {
       expect(response.status).toBe(409)
     })
 
-    test("should not be able to register a new account with same slug", async () => {
+    test("reject registration when slug already exists", async () => {
       await accountFactory.makeDrizzleAccount({
         slug: Slug.create("john-doe"),
       })
