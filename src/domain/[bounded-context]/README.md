@@ -13,7 +13,7 @@ Inside this boundary, terms have one meaning and the model remains internally co
 
 ## How to use
 
-1. Copy this folder and rename it to the real context name (for example: `billing`, `iam`, `catalog`).
+1. Copy this folder and rename it to the real context name (for example: `billing`, `iam`, `catalog`, `identity`). The repo already includes `example` and `identity` as concrete references.
 2. Keep code organized by layer inside the context:
    - `enterprise/` for entities and value objects.
    - `application/` for use cases, contracts, and application errors.

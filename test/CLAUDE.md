@@ -6,6 +6,7 @@
 
 ```
 test/
+  cryptography/  fake-hasher.ts, fake-encrypter.ts  stubs for domain crypto port interfaces
   factories/      make-<entity>.factory.ts        deterministic-ish entity builders
   repositories/   in-memory-<entity>.repository.ts in-memory implementations of domain repo contracts
                   in-memory.repository.ts          shared base class for the above

@@ -12,11 +12,9 @@ TypeScript API template based on Bun and Domain-Driven Design (DDD), with bounde
   - HTTP module/controller/factory/presenter flow
   - Drizzle repository implementation and schema
   - typed env loader (`zod`)
-- Example domain with:
-  - entity (`Example`)
-  - value object (`Slug`)
-  - use case with explicit error flow (`Either`)
-  - in-memory test infrastructure and specs
+- Reference bounded contexts:
+  - **`example`** — aggregate (`Example`), value object (`Slug`), use case with `Either`, domain events and subscribers, in-memory test setup.
+  - **`identity`** — aggregate (`Account`), `Slug` VO, `RegisterAccount` use case (optional slug derived from name), uniqueness errors for slug/username/email, cryptography ports (`HashGenerator`, `HashComparer`, `Encrypter`), specs and test doubles (`FakeHasher`, `FakeEncrypter`).
 
 ## Tech stack
 
@@ -39,6 +37,10 @@ src/
       README.md
     example/
       application/
+      enterprise/
+    identity/
+      application/
+        cryptography/
         repositories/
         use-cases/
       enterprise/
@@ -51,6 +53,7 @@ src/
     http/
     database/
 test/
+  cryptography/
   factories/
   repositories/
 docs/
