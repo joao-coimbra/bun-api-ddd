@@ -1,7 +1,6 @@
 import { DomainEvents } from "archstone/core"
 import type { AccountRepository } from "@/domain/identity/application/repositories/account.repository"
 import type { Account } from "@/domain/identity/enterprise/entities/account.entity"
-import { Slug } from "@/domain/identity/enterprise/entities/value-objects/slug.vo"
 import { InMemoryRepository } from "./in-memory.repository"
 
 export class InMemoryAccountRepository
@@ -17,8 +16,7 @@ export class InMemoryAccountRepository
   }
 
   findBySlug(slug: string): Promise<Account | null> {
-    const normalized = Slug.create(slug).value
-    const account = this.items.find((item) => item.slug === normalized)
+    const account = this.items.find((item) => item.slug === slug)
 
     return Promise.resolve(account ?? null)
   }

@@ -5,6 +5,7 @@
     "dev": "bun --watch src/infra/server.ts",
     "build": "bun build src/infra/server.ts --outfile dist/server.js",
     "start": "NODE_ENV=production bun run dist/server.js",
+    "test:e2e": "NODE_ENV=test bun --env-file=.env.test test/run-e2e.ts",
     "db:generate": "bun --bun drizzle-kit generate",
     "db:migrate": "bun --bun drizzle-kit migrate",
     "db:studio": "bun --bun drizzle-kit studio",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.12",
+    "@elysiajs/eden": "^1.4.9",
     "@faker-js/faker": "^10.4.0",
     "@types/bun": "latest",
     "drizzle-kit": "^0.31.10",

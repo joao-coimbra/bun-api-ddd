@@ -5,6 +5,9 @@ import {
   type AccountProps,
 } from "@/domain/identity/enterprise/entities/account.entity"
 import { Slug } from "@/domain/identity/enterprise/entities/value-objects/slug.vo"
+import type { DrizzleClient } from "@/infra/database/drizzle/client"
+import { DrizzleAccountMapper } from "@/infra/database/drizzle/mappers/drizzle-account.mapper"
+import { schema } from "@/infra/database/drizzle/schema"
 
 export function makeAccount(
   override: Partial<AccountProps> = {},
@@ -21,4 +24,21 @@ export function makeAccount(
     },
     id
   )
+}
+
+export class AccountFactory {
+  constructor(private readonly drizzle: DrizzleClient) {}
+
+  async makeDrizzleAccount(
+    data: Partial<AccountProps> = {},
+    id?: UniqueEntityId
+  ): Promise<Account> {
+    const account = makeAccount(data, id)
+
+    const row = DrizzleAccountMapper.toDrizzle(account)
+
+    await this.drizzle.insert(schema.user).values(row)
+
+    return account
+  }
 }
