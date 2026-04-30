@@ -14,7 +14,7 @@ TypeScript API template based on Bun and Domain-Driven Design (DDD), with bounde
   - typed env loader (`zod`)
 - Reference bounded contexts:
   - **`example`** — aggregate (`Example`), value object (`Slug`), use case with `Either`, domain events and subscribers, in-memory test setup.
-  - **`identity`** — aggregate (`Account`), `Slug` VO, `RegisterAccount` use case (optional slug derived from name), uniqueness errors for slug/username/email, cryptography ports (`HashGenerator`, `HashComparer`, `Encrypter`), specs and test doubles (`FakeHasher`, `FakeEncrypter`).
+  - **`identity`** — `Account`, `RegisterAccount`, crypto ports, Drizzle `user` table + migrations, `POST /accounts`. Reference: [`docs/archiqueture/identity-bounded-context.md`](docs/archiqueture/identity-bounded-context.md); playbook: [`src/domain/identity/CLAUDE.md`](src/domain/identity/CLAUDE.md).
 
 ## Tech stack
 
@@ -50,8 +50,11 @@ src/
     app.ts
     server.ts
     env/
+    cryptography/     BunHasher, JWT encrypter adapter (identity ports)
     http/
     database/
+      drizzle/
+        migrations/   generated SQL (`bun run db:generate`)
 test/
   cryptography/
   factories/
@@ -59,6 +62,7 @@ test/
 docs/
   archiqueture/
     domain-structure.md
+    identity-bounded-context.md
 ```
 
 For the domain rationale, see `docs/archiqueture/domain-structure.md`.
@@ -87,6 +91,12 @@ Run tests:
 
 ```bash
 bun test
+```
+
+Optional integration tests (Postgres + `.env.test`; see `test/setup-e2e.ts`):
+
+```bash
+bun run test:e2e
 ```
 
 Run code quality checks:
@@ -123,3 +133,16 @@ When creating a new subdomain, use `src/domain/[bounded-context]/README.md` as a
 - `application/` for use cases, contracts, and application-level errors
 
 This keeps each context cohesive and independently evolvable.
+
+## Documentation / AI context
+
+Read in this order for conventions and layout:
+
+1. [`CLAUDE.md`](CLAUDE.md) — root commands and global rules
+2. [`src/CLAUDE.md`](src/CLAUDE.md) — layer dependency (`infra → domain → core`)
+3. [`src/domain/CLAUDE.md`](src/domain/CLAUDE.md) — bounded-context structure
+4. [`src/domain/identity/CLAUDE.md`](src/domain/identity/CLAUDE.md) — identity context playbook
+5. [`docs/archiqueture/identity-bounded-context.md`](docs/archiqueture/identity-bounded-context.md) — identity BC reference
+6. [`src/infra/CLAUDE.md`](src/infra/CLAUDE.md), [`src/core/CLAUDE.md`](src/core/CLAUDE.md), [`test/CLAUDE.md`](test/CLAUDE.md) — as needed
+
+Architecture notes: [`docs/archiqueture/domain-structure.md`](docs/archiqueture/domain-structure.md)

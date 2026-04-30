@@ -2,6 +2,13 @@
 
 Business model, organized by **bounded context**. Every context is a self-contained subfolder. Use `[bounded-context]/` as the scaffold — see @src/domain/[bounded-context]/README.md and @docs/archiqueture/domain-structure.md for rationale.
 
+## Documented contexts
+
+- **`identity`** (permanent reference) — deeper notes: @src/domain/identity/CLAUDE.md
+- **`example`** — pattern for domain events, subscribers, and `WatchedList`; no extra CLAUDE file unless it grows.
+
+Add a `CLAUDE.md` at `src/domain/<context>/CLAUDE.md` when a context gains enough rules to justify a dedicated playbook (imports, invariants, naming). Link it from this file.
+
 ## Per-context layout
 
 ```

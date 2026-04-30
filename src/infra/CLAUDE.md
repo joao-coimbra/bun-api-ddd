@@ -19,6 +19,9 @@ src/infra/
   server.ts
   env/
     index.ts
+  cryptography/
+    bun-hasher.ts
+    jwt/             Encrypter adapter over a small JwtSigner port
   http/
     http.module.ts
     controllers/
@@ -30,6 +33,7 @@ src/infra/
     drizzle/
       client.ts
       schema/
+      migrations/
       mappers/
       repositories/
 ```
@@ -37,6 +41,7 @@ src/infra/
 ## HTTP conventions
 
 - Keep controllers thin: validate/parse request, call factory/use case, map to presenter.
+- When a use case returns `Either`, the controller may call `result.getOrThrow()` for the happy path; wire a global `onError` / error mapper if you need stable HTTP status bodies for expected failures (`AppError` subclasses).
 - Use factories (`http/factories/`) to wire use cases with repository implementations.
 - Use presenters (`http/presenters/`) to serialize domain objects for HTTP responses.
 - Route modules should compose via Elysia plugins/modules (e.g. `http.module.ts`).

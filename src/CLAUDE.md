@@ -30,6 +30,18 @@ If a needed import would point right, the type is in the wrong layer — move it
 | Repository **implementation**, HTTP route, env loader, third-party client | `src/infra/<area>/...` (create the folder when first needed) |
 | Test factory, in-memory repo, custom matcher, `waitFor`-style helper | `test/<area>/...` (see @test/CLAUDE.md) |
 
+## Memory / docs hierarchy
+
+Read in order when orienting in the repo:
+
+1. @CLAUDE.md (root) — commands, global conventions, `archstone` import cheatsheet
+2. @src/CLAUDE.md — layer dependency rules and “where new code goes”
+3. @src/domain/CLAUDE.md — bounded-context layout and rules
+4. **`src/domain/<context>/CLAUDE.md`** — optional; **`identity`** has @src/domain/identity/CLAUDE.md
+5. @src/infra/CLAUDE.md — HTTP, database, cryptography, env
+6. @src/core/CLAUDE.md — errors and shared primitives
+7. @test/CLAUDE.md — factories, in-memory repos, e2e harness
+
 ## Imports inside `src/`
 
 - Inside a single bounded context: relative paths (`../enterprise/<entity>.entity`).

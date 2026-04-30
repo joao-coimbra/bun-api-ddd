@@ -13,6 +13,13 @@ test/
   helpers/        wait-for.ts, ...                 generic test utilities
 ```
 
+## E2E harness (optional)
+
+- `run-e2e.ts` — discovers `src/**/*.e2e-spec.ts` and runs `bun test` with `setup-e2e.ts` preloaded (Postgres URL from `.env.test`, optional schema isolation + migrations).
+- `bun run test:e2e` wires `NODE_ENV=test` and `.env.test` via `package.json`.
+
+Integration spec files still live under `src/` with the `*.e2e-spec.ts` suffix.
+
 ## Hard rules
 
 - Nothing under `src/` may import from `test/`. Production code never depends on test scaffolding.

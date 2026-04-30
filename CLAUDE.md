@@ -19,13 +19,15 @@ DDD by bounded context with explicit layering: `infra -> domain -> core`.
 ```
 src/
   core/      shared, business-agnostic primitives (errors, future utilities)
-  domain/    bounded contexts; one folder per context
-  infra/     runtime adapters (http, database, env, server/app)
-test/        test scaffolding only — factories, in-memory repos, helpers
+  domain/    bounded contexts; one folder per context (see domain/identity/CLAUDE.md for identity)
+  infra/     runtime adapters (http, database, cryptography, env, server/app)
+test/        test scaffolding only — factories, in-memory repos, helpers (e2e preload optional)
 docs/        long-form docs (architecture rationale, ADRs)
 ```
 
-`test/` contains **helpers only**. Spec files live next to the source they cover as `<file>.spec.ts`. See @src/CLAUDE.md and @test/CLAUDE.md.
+`test/` contains **helpers only**. Spec files live next to the source they cover as `<file>.spec.ts`. Integration specs use `*.e2e-spec.ts`. See @src/CLAUDE.md and @test/CLAUDE.md.
+
+**CLAUDE.md chain:** root → `src/CLAUDE.md` → `src/domain/CLAUDE.md` → `src/domain/identity/CLAUDE.md` (for identity), plus `src/infra`, `src/core`, `test` as needed.
 
 ## Commands
 
@@ -40,6 +42,7 @@ bun run db:generate  # create drizzle migrations from schema
 bun run db:migrate   # apply migrations
 bun run db:studio    # open drizzle studio
 bun test           # run every *.spec.ts (built-in runner, no npm script)
+bun run test:e2e   # optional: integration specs (needs DB; see test/setup-e2e.ts)
 bun run check      # ultracite check (lint + format diagnostics)
 bun run fix        # ultracite fix (apply lint + format)
 ```
