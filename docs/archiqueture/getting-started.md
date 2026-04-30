@@ -37,7 +37,7 @@ Bun loads `.env` automatically for `bun run` / `bun test` in development.
 
 ### E2E / CI
 
-- Tracked file **`.env.test`** matches the default Docker Compose and GitHub Actions Postgres service (`docker` / `docker` user, database `careminder`, port `5432`).
+- Tracked file **`.env.test`** matches the default Docker Compose and GitHub Actions Postgres service (`docker` / `docker` user, database **`template`**, port **`5432`**).
 - `bun run test:e2e` uses `NODE_ENV=test` and `--env-file=.env.test`.
 
 **Security:** replace placeholder JWT secrets in real deployments; never reuse demo secrets in production.
@@ -50,9 +50,21 @@ From the repo root:
 docker compose up -d
 ```
 
-This starts Postgres **17** with user `docker`, password `docker`, database `careminder`, port **5432**, mounted at `./data/postgres` (add `data/` to `.gitignore` if you keep local volumes).
+This starts Postgres **17** with user **`docker`**, password **`docker`**, and — **on the first run only** (empty `./data/postgres`) — database **`template`** as in **`POSTGRES_DB`**, port **5432**.
 
-Stop:
+**If you see *“Skipping initialization”* in the container logs**, the data directory already had a cluster: Docker does **not** re-read `POSTGRES_USER` / `POSTGRES_DB` for that volume. Your **`.env`** `DATABASE_URL` must use a database that **already exists** in that cluster (e.g. whatever was created the first time), **or** you wipe local data and let Postgres init again:
+
+```bash
+docker compose down
+rm -rf data/postgres   # may need sudo if files are owned by the container user
+docker compose up -d
+```
+
+Then run `bun run db:migrate` after the server logs *“ready to accept connections”*.
+
+Data lives at **`./data/postgres`**; add **`data/`** to `.gitignore` if you keep local volumes.
+
+Stop the stack:
 
 ```bash
 docker compose down
@@ -100,12 +112,16 @@ bun run dev
 
 **Spec style:** use cases and most unit tests use **`it("should …")`**. Value-object specs (`*.vo.spec.ts`, e.g. `slug.vo.spec.ts`) and **E2E** files use **`test()`** with **no** `should` prefix on titles. Details: [`test/CLAUDE.md`](../../test/CLAUDE.md).
 
+**Use case unit tests:** assert **`expect(result.isRight()).toBeTrue()`** or **`expect(result.isLeft()).toBeTrue()`** first; call **`result.getOrThrow()`** after **`isRight()`** when you need the returned value (tokens, entity, etc.). For failures this template often stops at **`isLeft()`**; add **`try` / `catch`** around **`getOrThrow()`** only when you must assert a specific error class/message. Use **one `it` per scenario**; the shipped **`identity`** specs illustrate a minimal set of flows.
+
+**E2E data:** **`new AccountFactory(db)`**; **`beforeEach`** with **`await db.delete(schema.users)`** when a clean **`users`** table is required; assert on **HTTP**. **Bearer / pre-authenticated user:** **`await factory.makeDrizzleAuthenticatedAccount()`** then **`api.<route>.<method>({ headers: authHeader })`** — see **`get-my-profile.controller.e2e-spec.ts`** and [`test/CLAUDE.md`](../../test/CLAUDE.md). **`@elysiajs/eden` treaty:** **`204`** → often **`response.data === ""`**; **`200`** JSON → **`toMatchObject`**.
+
 E2E preload (`test/setup-e2e.ts`) creates an isolated Postgres **schema** per run, applies SQL migrations, and drops the schema in `afterAll`.
 
 ### Common issues
 
 - **`DATABASE_URL` missing or connection refused** — Start Postgres (Compose or local) before `db:migrate` or `test:e2e`.
-- **E2E fails locally but passes in CI** — Align `.env.test` with your DB host/port; CI uses `localhost:5432` and database `careminder`.
+- **E2E fails locally but passes in CI** — Align **`.env.test`** with your real DB name on disk (after a reused volume, that may not be **`template`** until you re-init — see **Database (Docker Compose)** above).
 - **JWT errors at runtime** — Ensure `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` are set for any code path that mounts JWT plugins.
 
 ## Code quality

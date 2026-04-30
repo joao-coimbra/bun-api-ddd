@@ -63,7 +63,7 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 - @docs/archiqueture/README.md — index of architecture markdown.
 - @docs/archiqueture/getting-started.md — prerequisites, env table, Postgres, OpenAPI, troubleshooting.
 - @docs/archiqueture/new-project-from-template.md — checklist when cloning for a real product.
-- @docs/archiqueture/identity-bounded-context.md — HTTP surface (`/accounts`, `/sessions`), JWT/cookie behavior, Drizzle `users` map (companion to @src/domain/identity/CLAUDE.md).
+- @docs/archiqueture/identity-bounded-context.md — HTTP surface (`/accounts`, `/sessions`, `/me`), JWT/cookie behavior, Drizzle `users` map (companion to @src/domain/identity/CLAUDE.md).
 
 ## Imports inside `src/`
 
@@ -76,3 +76,5 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 Specs are colocated as `<file>.spec.ts` next to source. `*.e2e-spec.ts` is reserved for integration tests. Never put a spec under `test/`.
 
 **Naming:** `it("should …")` for use cases and typical unit tests; `test()` without a `should` prefix for value-object specs (`*.vo.spec.ts`) and all E2E files — @test/CLAUDE.md.
+
+**Use case specs:** one scenario per `it`; **`expect(result.isRight()).toBeTrue()`** or **`isLeft()`**, then **`getOrThrow()`** on success when the value matters. E2E: **`new AccountFactory(db)`**, pre-auth **`makeDrizzleAuthenticatedAccount`** for bearer routes, **`beforeEach`** table resets where needed, Eden **`treaty`** (**`204`** / **`""`**, **`toMatchObject`**) — @test/CLAUDE.md.

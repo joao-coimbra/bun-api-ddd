@@ -63,10 +63,11 @@ Each first-class plugin has a colocated **`CLAUDE.md`**:
 ## HTTP conventions
 
 - Keep controllers thin: validate/parse request, call factory/use case, map to presenter.
-- When a use case returns `Either`, the controller may call `result.getOrThrow()` for the happy path; wire a global `onError` / error mapper if you need stable HTTP status bodies for expected failures (`AppError` subclasses).
+- When a use case returns `Either`, the controller may call `result.getOrThrow()` for the happy path; wire a global `onError` / error mapper if you need stable HTTP status bodies for expected failures (`AppError` subclasses). Colocated **`*.use-case.spec.ts`** files use **`isRight()`** / **`isLeft()`** first, then **`getOrThrow()`** on success when the payload is asserted — @test/CLAUDE.md.
 - Use factories (`http/factories/`) to wire use cases with repository implementations.
 - Use presenters (`http/presenters/`) to serialize domain objects for HTTP responses.
 - Route modules should compose via Elysia plugins/modules (e.g. `http.module.ts`).
+- **E2E** colocated next to controllers: **`new AccountFactory(db)`**; bearer specs use **`makeDrizzleAuthenticatedAccount()`** + treaty **`headers`**; **`beforeEach`** → **`db.delete(schema.users)`** where needed; Eden **`treaty`** — @test/CLAUDE.md (*E2E assertions*, *bearer routes*).
 
 ## Database conventions
 

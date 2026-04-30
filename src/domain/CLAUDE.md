@@ -43,7 +43,7 @@ src/domain/<context>/
 
 ## Entity / aggregate
 
-- `create(props, id?)` is the only public constructor path. Default `createdAt`, derived value objects, empty `WatchedList`s, and other invariants are filled here.
+- `create(props, id?)` is the only public constructor path. Default `createdAt`, derived value objects (example: **`Account.create`** sets **`slug`** from **`Slug.createFromText(name)`** when **`slug`** is omitted), empty `WatchedList`s, and other invariants are filled here.
 - Mark "is new" by `!id` and add the creation domain event from `create`:
   ```ts
   if (!id) example.addDomainEvent(new <Subject>CreatedEvent(example))
@@ -68,6 +68,7 @@ src/domain/<context>/
 - `Response = Either<<ErrA> | <ErrB>, { <result>: <Aggregate> }>`. Return `left(new <ContextError>(...))` for every expected failure — never throw.
 - Happy path: build the aggregate via its `create` factory, persist via the repository contract, return `right({...})`.
 - **Application errors** live in `application/use-cases/errors/<name>.error.ts` and **must `extend` a class from `@/core/errors/*`** (e.g. `extends ConflictError`) — never `implements UseCaseError` directly. The `AppError` chain carries `status` and `toResponse()`, which the future infra error handler depends on. See @src/core/CLAUDE.md.
+- **Unit specs** colocated with the use case: **`isRight()`** / **`isLeft()`** first; **`getOrThrow()`** after **`isRight()`** when you need the result — see @test/CLAUDE.md.
 
 ## Domain event dispatch
 
@@ -89,4 +90,4 @@ src/domain/<context>/
 
 ## Tests
 
-Specs are colocated next to source. Test scaffolding (factories, in-memory repos, helpers) lives in `test/`. See @test/CLAUDE.md for **`it` vs `test`** and **`should`** title rules.
+Specs are colocated next to source. Test scaffolding (factories, in-memory repos, helpers) lives in `test/`. See @test/CLAUDE.md for **`it` vs `test`**, **`should`** title rules, **one `it` per use-case flow**, and **`isRight` / `isLeft` + `getOrThrow`** in use-case unit specs.

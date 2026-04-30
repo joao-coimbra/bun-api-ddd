@@ -22,13 +22,21 @@ test/
 
 Integration spec files still live under `src/` with the `*.e2e-spec.ts` suffix.
 
+**E2E files** (`*.e2e-spec.ts`): import **`db`** from `@/infra/database/drizzle/client` for **`new AccountFactory(db)`** (and optional table reset). Do **not** use **`db.select`** or **`db.delete`** for **arrange** — use persistence factories; do **not** query the DB for **assertions** — assert on **HTTP**. **`beforeEach` / `afterEach`** inside each **`describe`** may **`await db.delete(schema.<table>)`** to clear rows between tests. Any other **persistence factory** under `test/factories/` follows the same injected-**`db`** pattern. `test/setup-e2e.ts` still applies migrations.
+
+**E2E scenario shape:** one **`test()`** per **scenario or outcome** — do not mix unrelated flows in the same test (for example: assert successful registration and a different `409` conflict in one block — split them). Keep each **`*.e2e-spec.ts`** aligned with **its controller**: `register-account.controller.e2e-spec.ts` should call **`/accounts`** only; **`/sessions`** belongs in `authenticate-account.controller.e2e-spec.ts`, not mixed into register specs. Prefer **fixed** `email` / `username` strings when **`beforeEach`** clears the table — easier to read than random suffixes; avoid file-scoped helper functions unless you extract to `test/helpers/`.
+
+**E2E assertions (`@elysiajs/eden` treaty):** responses **`204` / `Void`** often surface as **`response.data === ""`**, not **`null`** — use e.g. `expect(response.data ?? "").toBe("")`. For JSON, **`expect(response.data).toMatchObject({ … })`** instead of **`toContain`** on objects. When seeding a row that must collide with **`Slug.createFromText(name)`**, pass that slug in **`makeDrizzleAccount`** — **`name`** alone does not override the factory default ( **`Account.create`** fills missing slug from name; explicit `.slug` in overrides wins).
+
+**E2E bearer routes (pre-authenticated user):** for **`auth: true`** controllers (e.g. **`GET /me`**), avoid logging in through **`/sessions`** unless the scenario is sign-in itself. Use **`AccountFactory.makeDrizzleAuthenticatedAccount()`**: it persists a user, signs access/refresh JWTs via **`app.decorator.jwtAccessToken` / `jwtRefreshToken`**, and returns **`authHeader`** (`Authorization: Bearer …`) and **`cookieHeader`**. Pass headers into treaty: **`api.me.get({ headers: authHeader })`**. Shipped reference: **`get-my-profile.controller.e2e-spec.ts`** — nested **`describe`** blocks per HTTP outcome (**`401`** unauthenticated vs **`200`** with bearer). Clear **`users`** in **`beforeEach`** when tests need isolation; **`cleanup()`** on the helper is optional and wipes via global **`db`** (use sparingly).
+
 ## `bun:test` naming (colocated specs under `src/`)
 
 | Kind | API | Title style |
 |------|-----|-------------|
 | Unit — use cases, subscribers, most domain specs | `it()` from `bun:test` | Start with **`should …`** (behavioral wording). |
 | Unit — **value object** specs (`*.vo.spec.ts` in this template) | `test()` from `bun:test` | **No** `should` prefix — use direct statements (e.g. `creates…`, `normalizes…`). Reference: `slug.vo.spec.ts`. |
-| E2E — `*.e2e-spec.ts` | `test()` from `bun:test` | Plain English; **no** required `should` prefix. |
+| E2E — `*.e2e-spec.ts` | `test()` from `bun:test` | Plain English; **no** required `should` prefix. **One scenario per `test()`** — see *E2E scenario shape*. |
 
 ## Hard rules
 
@@ -49,9 +57,14 @@ import { waitFor } from "test/helpers/wait-for"
 
 ## Factories (`test/factories/`)
 
-- File: `make-<entity>.factory.ts`. Export `make<Entity>(override: Partial<<Entity>Props> = {}, id?: UniqueEntityId): <Entity>`.
-- Build via the entity's static `create` factory. Use `@faker-js/faker` for sensible defaults; spread `override` last so callers can pin any field.
-- A factory must never reach into infra or stub external services.
+- File: `make-<entity>.factory.ts`. Export `make<Entity>(…)` for **pure** domain instances (no I/O) unless the entity fills defaults in `create` (e.g. **`Account.create`** adds **`slug`** from **`Slug.createFromText(name)`** when omitted).
+- **Persistence factory classes** (e.g. `AccountFactory`) — used for E2E **arrange** when you need rows in Postgres:
+  - Constructor **`(private readonly db: DrizzleClient)`** for **`makeDrizzleAccount`**. **Do not** reintroduce a default singleton for inserts.
+  - May import mappers and **`schema`** from `@/infra/...` for inserts.
+  - **`makeDrizzleAuthenticatedAccount`** — **pre-authenticated E2E user:** **`await factory.makeDrizzleAuthenticatedAccount()`** inserts a row, returns **`{ account, accessToken, refreshToken, authHeader, cookieHeader, cleanup }`**. Use **`authHeader`** (or **`cookieHeader`**) on treaty calls for bearer routes; see *E2E bearer routes* above and **`get-my-profile.controller.e2e-spec.ts`**. Prefer **`beforeEach` → `db.delete(schema.users)`** for isolation; **`cleanup()`** deletes all **`users`** via global **`db`** — use only when a full wipe is intentional.
+  - **Every consumer** (`*.e2e-spec.ts`) should **`import { db } from "@/infra/database/drizzle/client"`** and **`new AccountFactory(db)`**.
+- The shipped **identity** slice uses **`AccountFactory` + `makeAccount`** as the reference.
+- Use **`@faker-js/faker`** in **`make*`** helpers; spread **`override`** last so callers can pin any field.
 
 ## In-memory repositories (`test/repositories/`)
 
@@ -99,33 +112,43 @@ describe("<Name>", () => {
 
 ### Use case spec
 
+Use a **readable `describe` title** (e.g. `"Register Account"`, `"Get My Profile"`), not the concrete class name (`RegisterAccountUseCase`).
+
+- **Vertical spacing in `it` blocks:** **Blank line between phases** — e.g. after **`execute`**, after asserting **`isRight()`** / **`isLeft()`** when the next lines are a *different* concern (unwrap value vs. checking the `Either`). **Within one concern**, keep **`getOrThrow()`**, helper **`const`s, and related `expect`s contiguous** (no blank between them): e.g. tokens from **`getOrThrow()`** with adjacent **`expect`s**, or **`expect(repo.items).toHaveLength(1)`** plus **`expect(repo.items[0]).toMatchObject({…})`** on the aggregate (see **`register-account.use-case.spec.ts`**). Between **`make*` / setup** and **`await repository.create`**, and **`create`** and **`execute`**, one blank line each when it helps scan the *arrange* block.
+
+- **One `it` per flow** — a single scenario per test (happy path, or one failure mode, or one branch). Do not combine unrelated assertions in the same `it`.
+- **Branch on `Either` first:** **`expect(result.isRight()).toBeTrue()`** or **`expect(result.isLeft()).toBeTrue()`** (Bun: **`.toBeTrue()`**). When the right value matters (tokens, aggregate, `nothing()`), call **`result.getOrThrow()`** only **after** asserting **`isRight()`** — mirrors controllers but keeps the branch explicit in tests. Failure scenarios in this template often stop at **`isLeft()`**; add **`getOrThrow()`** in **`try` / `catch`** (or **`toThrow`**) only when you need to assert a specific error type/message.
+
 ```ts
-let repo: InMemory<Entity>Repository
+let inMemory<Entity>Repository: InMemory<Entity>Repository
+
 let sut: <Name>UseCase
 
-beforeEach(() => {
-  repo = new InMemory<Entity>Repository(/* sibling in-memory repos */)
-  sut = new <Name>UseCase(repo)
-})
+describe("<Human-readable title>", () => {
+  beforeEach(() => {
+    inMemory<Entity>Repository = new InMemory<Entity>Repository(/* sibling in-memory repos */)
+    sut = new <Name>UseCase(repo)
+  })
 
-it("should succeed on the happy path", async () => {
-  const result = await sut.execute({ /* ... */ })
-  expect(result.isRight()).toBeTrue()
-  const { <result> } = result.getOrThrow()
-  // assertions on <result> and repo.items
-})
+  it("should succeed on the happy path", async () => {
+    const result = await sut.execute({ /* ... */ })
 
-it("should return <Error> when <condition>", async () => {
-  const result = await sut.execute({ /* ... */ })
-  result.match({
-    left: (error) => {
-      expect(error).toBeInstanceOf(<Error>)
-      expect(error.message).toBe("<expected message>")
-    },
-    right: () => { throw new Error("expected left branch") },
+    expect(result.isRight()).toBeTrue()
+
+    const value = result.getOrThrow()
+    expect(value).toEqual(/* ... */)
+    // more expects on the same outcome stay contiguous (no blank between)
+  })
+
+  it("should return <Error> when <condition>", async () => {
+    const result = await sut.execute({ /* ... */ })
+
+    expect(result.isLeft()).toBeTrue()
   })
 })
 ```
+
+Keep **coverage proportional to a template**: exercise the main happy path and representative failures (see `identity` use-case specs), not an exhaustive cartesian product of edge cases unless the product requires it.
 
 ### Subscriber spec (reactive style)
 
