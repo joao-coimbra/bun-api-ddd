@@ -1,7 +1,6 @@
 import { Elysia, t } from "elysia"
 import { databasePlugin } from "@/infra/database/database.plugin"
 import { makeRegisterAccount } from "../factories/make-register-account.factory"
-import { AccountPresenter } from "../presenters/account.presenter"
 
 const bodySchema = t.Object({
   name: t.String({
@@ -32,15 +31,6 @@ const bodySchema = t.Object({
   }),
 })
 
-const response201Schema = t.Object({
-  id: t.String(),
-  name: t.String(),
-  username: t.String(),
-  email: t.String(),
-  slug: t.String(),
-  createdAt: t.String(),
-})
-
 export const registerAccountController = new Elysia().use(databasePlugin).post(
   "/accounts",
   async ({ db, body, set }) => {
@@ -56,16 +46,14 @@ export const registerAccountController = new Elysia().use(databasePlugin).post(
       password,
     })
 
-    const { account } = result.getOrThrow()
+    result.getOrThrow()
 
-    set.status = 201
-
-    return AccountPresenter.toHTTP(account)
+    set.status = 204
   },
   {
     body: bodySchema,
     response: {
-      201: response201Schema,
+      204: t.Void(),
       409: t.Object({
         error: t.String(),
         code: t.Literal(409),
