@@ -33,4 +33,4 @@ Use this plugin wherever you need to **sign** or **verify** tokens in HTTP handl
 
 - Bearer + macro that **verifies** access tokens: @src/infra/auth/CLAUDE.md
 - Identity use case: @src/domain/identity/CLAUDE.md
-- HTTP reference: @docs/archiqueture/identity-bounded-context.md
+- HTTP reference: @src/domain/identity/CLAUDE.md

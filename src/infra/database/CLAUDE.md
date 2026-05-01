@@ -32,4 +32,4 @@ Do not import `drizzle` directly in controllers for new code—prefer `db` from 
 ## See also
 
 - Parent layer: @src/infra/CLAUDE.md
-- Identity persistence: @docs/archiqueture/identity-bounded-context.md
+- Identity persistence: @src/domain/identity/CLAUDE.md

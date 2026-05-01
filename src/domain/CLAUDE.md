@@ -1,12 +1,12 @@
 # src/domain
 
-Business model, organized by **bounded context**. Every context is a self-contained subfolder. Use `src/domain/[bounded-context]/` as the scaffold. Rationale and growth guidelines: @docs/archiqueture/domain-structure.md. Add an optional `README.md` inside a context only when onboarding notes help; **`identity`** uses @src/domain/identity/CLAUDE.md instead.
+Business model, organized by **bounded context**. Every context is a self-contained subfolder. Use `src/domain/[bounded-context]/` as the scaffold. Add an optional `README.md` inside a context only when onboarding notes help; **`identity`** uses @src/domain/identity/CLAUDE.md instead.
 
 ## Documented contexts
 
-- **`identity`** — **Permanent** product context (accounts, auth). Playbook: @src/domain/identity/CLAUDE.md. Long-form: @docs/archiqueture/identity-bounded-context.md. New auth/account features belong here.
+- **`identity`** — **Permanent** product context (accounts, auth). Playbook: @src/domain/identity/CLAUDE.md. New auth/account features belong here.
 
-Add a `CLAUDE.md` at `src/domain/<context>/CLAUDE.md` when a context gains enough rules to justify a dedicated playbook (imports, invariants, naming). Link it from this file. See @docs/archiqueture/domain-structure.md for how **`identity`** fits the template and how to add sibling contexts.
+Add a `CLAUDE.md` at `src/domain/<context>/CLAUDE.md` when a context gains enough rules to justify a dedicated playbook (imports, invariants, naming). Link it from this file.
 
 Stacked reading order for all layers (infra, core, test): @src/CLAUDE.md (*Memory / docs hierarchy*).
 
@@ -52,7 +52,7 @@ src/domain/<context>/
 
 ## Value object
 
-- Two static factories are common in this template:
+- Two static factories are common in this codebase:
   - `static create(raw): <VO>` — minimal normalization (`trim`, `toLowerCase`).
   - `static createFromText(text): <VO>` — derived/computed form (e.g. slugification).
 - Throw a domain-level error from the factory when the input violates an invariant. Use cases that call `<VO>.create()` must wrap the call in `try/catch` and return `left(new <Error>())`.

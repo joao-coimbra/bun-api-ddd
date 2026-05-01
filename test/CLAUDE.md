@@ -42,7 +42,7 @@ Integration spec files still live under `src/` with the `*.e2e-spec.ts` suffix.
 | Kind | API | Title style |
 |------|-----|-------------|
 | Unit — use cases, subscribers, most domain specs | `it()` from `bun:test` | Start with **`should …`** (behavioral wording). |
-| Unit — **value object** specs (`*.vo.spec.ts` in this template) | `test()` from `bun:test` | **No** `should` prefix — use direct statements (e.g. `creates…`, `normalizes…`). Reference: `slug.vo.spec.ts`. |
+| Unit — **value object** specs (`*.vo.spec.ts` in this codebase) | `test()` from `bun:test` | **No** `should` prefix — use direct statements (e.g. `creates…`, `normalizes…`). Reference: `slug.vo.spec.ts`. |
 | E2E — `*.e2e-spec.ts` | `test()` from `bun:test` | Plain English; **no** required `should` prefix. **One scenario per `test()`** — see *E2E scenario shape*. |
 
 ## Hard rules
@@ -124,7 +124,7 @@ Use a **readable `describe` title** (e.g. `"Register Account"`, `"Get My Profile
 - **Vertical spacing in `it` blocks:** **Blank line between phases** — e.g. after **`execute`**, after asserting **`isRight()`** / **`isLeft()`** when the next lines are a *different* concern (unwrap value vs. checking the `Either`). **Within one concern**, keep **`getOrThrow()`**, helper **`const`s, and related `expect`s contiguous** (no blank between them): e.g. tokens from **`getOrThrow()`** with adjacent **`expect`s**, or **`expect(repo.items).toHaveLength(1)`** plus **`expect(repo.items[0]).toMatchObject({…})`** on the aggregate (see **`register-account.use-case.spec.ts`**). Between **`make*` / setup** and **`await repository.create`**, and **`create`** and **`execute`**, one blank line each when it helps scan the *arrange* block.
 
 - **One `it` per flow** — a single scenario per test (happy path, or one failure mode, or one branch). Do not combine unrelated assertions in the same `it`.
-- **Branch on `Either` first:** **`expect(result.isRight()).toBeTrue()`** or **`expect(result.isLeft()).toBeTrue()`** (Bun: **`.toBeTrue()`**). When the right value matters (tokens, aggregate, `nothing()`), call **`result.getOrThrow()`** only **after** asserting **`isRight()`** — mirrors controllers but keeps the branch explicit in tests. Failure scenarios in this template often stop at **`isLeft()`**; add **`getOrThrow()`** in **`try` / `catch`** (or **`toThrow`**) only when you need to assert a specific error type/message.
+- **Branch on `Either` first:** **`expect(result.isRight()).toBeTrue()`** or **`expect(result.isLeft()).toBeTrue()`** (Bun: **`.toBeTrue()`**). When the right value matters (tokens, aggregate, `nothing()`), call **`result.getOrThrow()`** only **after** asserting **`isRight()`** — mirrors controllers but keeps the branch explicit in tests. Failure scenarios here often stop at **`isLeft()`**; add **`getOrThrow()`** in **`try` / `catch`** (or **`toThrow`**) only when you need to assert a specific error type/message.
 
 ```ts
 let inMemory<Entity>Repository: InMemory<Entity>Repository
@@ -155,7 +155,7 @@ describe("<Human-readable title>", () => {
 })
 ```
 
-Keep **coverage proportional to a template**: exercise the main happy path and representative failures (see `identity` use-case specs), not an exhaustive cartesian product of edge cases unless the product requires it.
+Keep **coverage proportional to current product scope**: exercise the main happy path and representative failures (see `identity` use-case specs), not an exhaustive cartesian product of edge cases unless the product requires it.
 
 ### Subscriber spec (reactive style)
 

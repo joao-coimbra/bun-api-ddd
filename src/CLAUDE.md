@@ -38,7 +38,7 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 
 1. @CLAUDE.md (root) — commands, global conventions, `archstone` import cheatsheet
 2. @src/CLAUDE.md — layer dependency rules and “where new code goes” (**this file**)
-3. @docs/archiqueture/domain-structure.md — why contexts are separate; **`identity`** as the shipped reference context
+3. @src/domain/CLAUDE.md — bounded-context structure and cross-context boundaries
 4. @src/domain/CLAUDE.md — bounded-context layout and hard rules (entities, use cases, repos, events)
 5. **`src/domain/<context>/CLAUDE.md`** — playbook for the product area you are changing  
    - **`identity`** (permanent reference): @src/domain/identity/CLAUDE.md — accounts, auth, crypto ports; extend here for auth/account features.  
@@ -55,15 +55,13 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 | Adding a use case / entity / VO | 1–2, 4–5; 7 if you introduce a new shared error shape |
 | Copy-pasting DDD event/WatchedList patterns | 1–2, 4, @src/domain/CLAUDE.md (events/subscribers), @test/CLAUDE.md for in-memory repo dispatch rules |
 | Writing unit or e2e specs | 1, 8; spec file stays next to `src/` source |
-| First-time setup (env, Docker, migrate, e2e) | 1–2, @docs/archiqueture/getting-started.md |
-| Forking this repo for a new API | @docs/archiqueture/new-project-from-template.md + tier 1–2 |
+| First-time setup (env, Docker, migrate, e2e) | 1–2, 6, 8 |
+| Bootstrapping a new bounded context | 1–2, 4–5 |
 
 ### Long-form reference
 
-- @docs/archiqueture/README.md — index of architecture markdown.
-- @docs/archiqueture/getting-started.md — prerequisites, env table, Postgres, OpenAPI, troubleshooting.
-- @docs/archiqueture/new-project-from-template.md — checklist when cloning for a real product.
-- @docs/archiqueture/identity-bounded-context.md — HTTP surface (`/accounts`, `/sessions`, `/me`), JWT/cookie behavior, Drizzle `users` map (companion to @src/domain/identity/CLAUDE.md).
+- Keep product-specific long-form docs under `docs/` using your team naming.
+- Treat `CLAUDE.md` files as the source of truth for coding behavior and layering rules.
 
 ## Imports inside `src/`
 
