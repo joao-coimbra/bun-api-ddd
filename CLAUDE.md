@@ -61,7 +61,7 @@ bun run db:generate  # create drizzle migrations from schema
 bun run db:migrate   # apply migrations
 bun run db:studio    # open drizzle studio
 bun test           # run every *.spec.ts (built-in runner, no npm script)
-bun run test:e2e   # *.e2e-spec.ts (Postgres + .env.test); see @test/CLAUDE.md (factories, treaty)
+bun run test:e2e   # *.e2e-spec.ts (Postgres + env vars); see @test/CLAUDE.md (factories, treaty)
 bun run check      # ultracite check (lint + format diagnostics)
 bun run fix        # ultracite fix (apply lint + format)
 ```

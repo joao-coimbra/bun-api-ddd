@@ -37,8 +37,8 @@ Bun loads `.env` automatically for `bun run` / `bun test` in development.
 
 ### E2E / CI
 
-- Tracked file **`.env.test`** matches the default Docker Compose and GitHub Actions Postgres service (`docker` / `docker` user, database **`template`**, port **`5432`**).
-- `bun run test:e2e` uses `NODE_ENV=test` and `--env-file=.env.test`.
+- **CI** (`.github/workflows/run-ci.yml`) sets `DATABASE_URL`, `JWT_ACCESS_SECRET`, and `JWT_REFRESH_SECRET` for the E2E job (same shape as Docker Compose defaults: user **`docker`**, password **`docker`**, database **`template`**, port **`5432`** on **`localhost`**).
+- **Local:** `bun run test:e2e` only sets `NODE_ENV=test`. Export the same variables in your shell first (copy values from `.env.example` or mirror the workflow `env` block).
 
 **Security:** replace placeholder JWT secrets in real deployments; never reuse demo secrets in production.
 
@@ -108,7 +108,7 @@ bun run dev
 | Command | Scope |
 |---------|--------|
 | `bun test` | All `*.spec.ts` next to source (unit + use-case tests) |
-| `bun run test:e2e` | All `*.e2e-spec.ts` under `src/`; requires **Postgres** and `.env.test` (or equivalent env) |
+| `bun run test:e2e` | All `*.e2e-spec.ts` under `src/`; requires **Postgres** and **`DATABASE_URL`**, **`JWT_ACCESS_SECRET`**, **`JWT_REFRESH_SECRET`** in the environment (CI sets them; local: export first) |
 
 **Spec style:** use cases and most unit tests use **`it("should …")`**. Value-object specs (`*.vo.spec.ts`, e.g. `slug.vo.spec.ts`) and **E2E** files use **`test()`** with **no** `should` prefix on titles. Details: [`test/CLAUDE.md`](../../test/CLAUDE.md).
 
@@ -121,7 +121,7 @@ E2E preload (`test/setup-e2e.ts`) creates an isolated Postgres **schema** per ru
 ### Common issues
 
 - **`DATABASE_URL` missing or connection refused** — Start Postgres (Compose or local) before `db:migrate` or `test:e2e`.
-- **E2E fails locally but passes in CI** — Align **`.env.test`** with your real DB name on disk (after a reused volume, that may not be **`template`** until you re-init — see **Database (Docker Compose)** above).
+- **E2E fails locally but passes in CI** — Check **`DATABASE_URL`** matches a database that exists in your cluster (after a reused volume, that may not be **`template`** until you re-init — see **Database (Docker Compose)** above) and that JWT env vars are set.
 - **JWT errors at runtime** — Ensure `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` are set for any code path that mounts JWT plugins.
 
 ## Code quality

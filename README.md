@@ -133,7 +133,7 @@ Validated in [`src/infra/env/index.ts`](src/infra/env/index.ts).
 | `JWT_ACCESS_SECRET` | _(required)_ | Access token signing |
 | `JWT_REFRESH_SECRET` | _(required)_ | Refresh token signing (different secret) |
 
-See [Getting started — Environment](docs/archiqueture/getting-started.md#environment-variables) for `.env` / `.env.test` and CI.
+See [Getting started — Environment](docs/archiqueture/getting-started.md#environment-variables) for `.env`, E2E env, and CI.
 
 ## Scripts
 
@@ -173,7 +173,7 @@ There is **no** generic `[bounded-context]/README.md` scaffold file; follow [`sr
 ## Tests & CI
 
 - **Unit / domain:** `bun test` picks up `*.spec.ts` next to sources. Use **`it("should …")`** for use cases and typical unit tests; **`*.vo.spec.ts`** uses **`test()`** without a `should` prefix on titles ([`test/CLAUDE.md`](test/CLAUDE.md)).
-- **E2E:** `bun run test:e2e` uses `.env.test` and isolated DB schema; E2E files use **`test()`** ([`test/CLAUDE.md`](test/CLAUDE.md)).
+- **E2E:** `bun run test:e2e` needs Postgres plus env vars (CI injects them); isolated DB schema per run; E2E files use **`test()`** ([`test/CLAUDE.md`](test/CLAUDE.md)).
 - **GitHub Actions** (`.github/workflows/run-ci.yml`): `check`, `bun test`, `test:e2e` with Postgres **17** service.
 
 ## Documentation

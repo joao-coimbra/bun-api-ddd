@@ -17,8 +17,8 @@ test/
 
 ## E2E harness (optional)
 
-- `run-e2e.ts` — discovers `src/**/*.e2e-spec.ts` and runs `bun test` with `setup-e2e.ts` preloaded (Postgres URL from `.env.test`, optional schema isolation + migrations).
-- `bun run test:e2e` wires `NODE_ENV=test` and `.env.test` via `package.json`.
+- `run-e2e.ts` — discovers `src/**/*.e2e-spec.ts` and runs `bun test` with `setup-e2e.ts` preloaded (Postgres URL from the process environment, optional schema isolation + migrations).
+- `bun run test:e2e` sets `NODE_ENV=test` only; **CI** injects `DATABASE_URL` and JWT secrets on the workflow step. **Locally**, export the same variables (see `.github/workflows/run-ci.yml` / `.env.example`) before running.
 
 Integration spec files still live under `src/` with the `*.e2e-spec.ts` suffix.
 

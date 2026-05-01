@@ -16,7 +16,7 @@ Use this checklist when you copy, fork, or generate a **new** service from **bun
 - In CI (e.g. GitHub Actions), inject secrets as encrypted variables; do not commit `.env` with production values.
 - If you change the default DB name or user (`careminder`, `docker`), update:
   - **`.env.example`**
-  - **`.env.test`** (or CI env) so `bun run test:e2e` still connects.
+  - **`DATABASE_URL` / JWT secrets** in the environment (or CI `env:` on the E2E step) so `bun run test:e2e` still connects.
   - **`docker-compose.yml`** and **`.github/workflows/run-ci.yml`** if you still use those defaults.
 
 ## 3. Domain model
