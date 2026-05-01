@@ -75,6 +75,8 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 
 Specs are colocated as `<file>.spec.ts` next to source. `*.e2e-spec.ts` is reserved for integration tests. Never put a spec under `test/`.
 
+**TDD rule for new features:** create or update a failing spec first, implement the smallest change to make it pass, then refactor. Apply this consistently for both human and agent-driven development.
+
 **Naming:** `it("should …")` for use cases and typical unit tests; `test()` without a `should` prefix for value-object specs (`*.vo.spec.ts`) and all E2E files — @test/CLAUDE.md.
 
 **Use case specs:** one scenario per `it`; **`expect(result.isRight()).toBeTrue()`** or **`isLeft()`**, then **`getOrThrow()`** on success when the value matters. E2E: **`new AccountFactory(db)`**, pre-auth **`makeDrizzleAuthenticatedAccount`** for bearer routes, **`beforeEach`** table resets where needed, Eden **`treaty`** (**`204`** / **`""`**, **`toMatchObject`**) — @test/CLAUDE.md.

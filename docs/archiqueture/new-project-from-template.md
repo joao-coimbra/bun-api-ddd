@@ -13,10 +13,10 @@ Use this checklist when you copy, fork, or generate a **new** service from **bun
 
 - Rotate **JWT** secrets (`JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`) in every non-demo environment.
 - Point **`DATABASE_URL`** at your real Postgres (managed DB, Compose, or k8s secret).
-- In CI (e.g. GitHub Actions), inject secrets as encrypted variables; do not commit `.env` with production values.
+- In CI (e.g. GitHub Actions), inject production secrets as encrypted variables; do not commit `.env` with production values.
 - If you change the default DB name or user (`careminder`, `docker`), update:
   - **`.env.example`**
-  - **`DATABASE_URL` / JWT secrets** in the environment (or CI `env:` on the E2E step) so `bun run test:e2e` still connects.
+  - **`.env.test`** (or equivalent test env) so `bun run test:e2e` still connects.
   - **`docker-compose.yml`** and **`.github/workflows/run-ci.yml`** if you still use those defaults.
 
 ## 3. Domain model
@@ -31,6 +31,11 @@ Use this checklist when you copy, fork, or generate a **new** service from **bun
 - Register new route modules from [`src/infra/http/http.module.ts`](../../src/infra/http/http.module.ts).
 - Follow existing flow: **controller** (thin) → **factory** (wires use case + repos/adapters) → **presenter** when response shaping is non-trivial.
 - Prefer **colocated** `*.e2e-spec.ts` next to controllers when you add routes that need Postgres.
+
+## 4.1 Development strategy (TDD)
+
+- Keep **TDD-first** as a team rule (and for coding agents): failing test first, minimal implementation, refactor with tests green.
+- Preserve and adapt `CLAUDE.md` rules so agents keep consistent test-driven behavior when new features are added.
 
 ## 5. Database
 

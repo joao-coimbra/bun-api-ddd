@@ -2,6 +2,8 @@
 
 Long-form reference for this repository’s structure and the shipped **identity** bounded context. Short playbooks live in **`CLAUDE.md`** files at the repo and under `src/`; read those first for day-to-day rules.
 
+> This folder is onboarding-oriented and can be removed in generated repositories after the team is comfortable with the template. Core agent guidance must remain in `CLAUDE.md` files.
+
 | Document | Purpose |
 |----------|---------|
 | [Getting started](getting-started.md) | Prerequisites, env vars, Postgres, migrations, dev server, tests, OpenAPI |

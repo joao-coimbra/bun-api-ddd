@@ -17,10 +17,17 @@ test/
 
 ## E2E harness (optional)
 
-- `run-e2e.ts` — discovers `src/**/*.e2e-spec.ts` and runs `bun test` with `setup-e2e.ts` preloaded (Postgres URL from the process environment, optional schema isolation + migrations).
-- `bun run test:e2e` sets `NODE_ENV=test` only; **CI** injects `DATABASE_URL` and JWT secrets on the workflow step. **Locally**, export the same variables (see `.github/workflows/run-ci.yml` / `.env.example`) before running.
+- `run-e2e.ts` — discovers `src/**/*.e2e-spec.ts` and runs `bun test` with `setup-e2e.ts` preloaded (Postgres URL from `.env.test`, optional schema isolation + migrations).
+- `bun run test:e2e` delegates to `test/run-e2e.ts`; keep `.env.test` aligned with local/CI Postgres defaults.
 
 Integration spec files still live under `src/` with the `*.e2e-spec.ts` suffix.
+
+## TDD strategy (mandatory for new features)
+
+- Start with a failing test that describes the new behavior (prefer unit/use-case first; add E2E when HTTP contract or persistence behavior changes).
+- Implement the smallest production change that makes the test pass.
+- Refactor only with tests green; if behavior changes again, add/update test first.
+- For agent work, do not skip the failing-test step unless the task is docs-only or explicitly requested otherwise.
 
 **E2E files** (`*.e2e-spec.ts`): import **`db`** from `@/infra/database/drizzle/client` for **`new AccountFactory(db)`** (and optional table reset). Do **not** use **`db.select`** or **`db.delete`** for **arrange** — use persistence factories; do **not** query the DB for **assertions** — assert on **HTTP**. **`beforeEach` / `afterEach`** inside each **`describe`** may **`await db.delete(schema.<table>)`** to clear rows between tests. Any other **persistence factory** under `test/factories/` follows the same injected-**`db`** pattern. `test/setup-e2e.ts` still applies migrations.
 
