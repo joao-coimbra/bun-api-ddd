@@ -19,6 +19,7 @@ Opinionated **[Bun](https://bun.sh/)** + **TypeScript** API skeleton using **Dom
 - [API surface](#api-surface)
 - [Working with bounded contexts](#working-with-bounded-contexts)
 - [Tests & CI](#tests--ci)
+- [Contributing](#contributing)
 - [Documentation](#documentation)
 - [License note](#license-note)
 
@@ -174,12 +175,18 @@ There is **no** generic `[bounded-context]/README.md` scaffold file; follow [`sr
 
 - **Unit / domain:** `bun test` picks up `*.spec.ts` next to sources. Use **`it("should …")`** for use cases and typical unit tests; **`*.vo.spec.ts`** uses **`test()`** without a `should` prefix on titles ([`test/CLAUDE.md`](test/CLAUDE.md)).
 - **E2E:** `bun run test:e2e` uses `.env.test` + isolated DB schema; E2E files use **`test()`** ([`test/CLAUDE.md`](test/CLAUDE.md)).
-- **GitHub Actions** (`.github/workflows/run-ci.yml`): `check`, `bun test`, `test:e2e` with Postgres **17** service.
+- **GitHub Actions** (`.github/workflows/run-ci.yml`): runs on **pull requests** to `main` only (merge is allowed only after green checks, so a second run on `push` to `main` is redundant). Jobs: `check`, `bun test`, `test:e2e` with Postgres **17**, Bun install cache, `contents: read` permission.
+
+## Contributing
+
+For **this template** (and similar open-source setups), changes typically go through **PRs** into `main` with optional **protected `main`**. If you generated a **new repo from the template**, you can adopt a different Git workflow (e.g. direct pushes to `main`) and tune CI or branch rules—see [`CONTRIBUTING.md`](CONTRIBUTING.md) (“Your repo, your rules”). Security reports: [`SECURITY.md`](SECURITY.md).
 
 ## Documentation
 
 | Resource | Description |
 |----------|-------------|
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Optional OSS-style PR workflow; customizing Git/CI for template consumers |
+| [`SECURITY.md`](SECURITY.md) | How to report security issues |
 | [`docs/archiqueture/README.md`](docs/archiqueture/README.md) | Index of architecture docs |
 | [`docs/archiqueture/getting-started.md`](docs/archiqueture/getting-started.md) | Env, Docker, migrations, OpenAPI, common issues |
 | [`docs/archiqueture/new-project-from-template.md`](docs/archiqueture/new-project-from-template.md) | Checklist for new APIs from this repo |
