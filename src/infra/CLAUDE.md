@@ -38,8 +38,11 @@ src/infra/
     presenters/
   database/
     database.plugin.ts
+    seed.ts             entry point (bun run db:seed)
     types.ts
-    CLAUDE.md      playbook: db decoration + Drizzle layout
+    CLAUDE.md      playbook: db decoration, Drizzle layout, seeder port/adapter design
+    seeders/            one seeder per bounded context (domain ports only)
+    factories/          DatabaseSeeder + concrete adapter wiring
     drizzle/
       client.ts
       schema/
@@ -76,6 +79,7 @@ Each first-class plugin has a colocated **`CLAUDE.md`**:
 - Mappers isolate conversion between Drizzle raw types and domain entities.
 - Repository implementations live in `database/drizzle/repositories/` and implement contracts from `src/domain/.../application/repositories/`.
 - Keep transactions and query details inside infra repositories, never in use cases.
+- Seeders (`seeders/`) depend only on domain ports — no Drizzle imports. Concrete wiring lives in `factories/make-seeder.factory.ts` only. See @src/infra/database/CLAUDE.md.
 
 ## Env and config
 

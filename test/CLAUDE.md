@@ -12,7 +12,6 @@ test/
   factories/      make-<entity>.factory.ts        deterministic-ish entity builders
   repositories/   in-memory-<entity>.repository.ts in-memory implementations of domain repo contracts
                   in-memory.repository.ts          shared base class for the above
-  seeders/        fake-<context>.seeder.ts          Seeder fakes for unit-testing DatabaseSeeder
   helpers/        wait-for.ts, ...                 generic test utilities
 ```
 
@@ -44,6 +43,7 @@ Integration spec files still live under `src/` with the `*.e2e-spec.ts` suffix.
 |------|-----|-------------|
 | Unit — use cases, subscribers, most domain specs | `it()` from `bun:test` | Start with **`should …`** (behavioral wording). |
 | Unit — **value object** specs (`*.vo.spec.ts` in this codebase) | `test()` from `bun:test` | **No** `should` prefix — use direct statements (e.g. `creates…`, `normalizes…`). Reference: `slug.vo.spec.ts`. |
+| Unit — **infra specs** (seeders, mappers, etc.) | `test()` from `bun:test` | **No** `should` prefix — use direct action statements (e.g. `persist one account…`). Reference: `account.seeder.spec.ts`. |
 | E2E — `*.e2e-spec.ts` | `test()` from `bun:test` | Plain English; **no** required `should` prefix. **One scenario per `test()`** — see *E2E scenario shape*. |
 
 ## Hard rules

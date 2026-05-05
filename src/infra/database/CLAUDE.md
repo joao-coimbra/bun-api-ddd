@@ -40,7 +40,6 @@ Run with `bun run db:seed`. The seeder stack follows port/adapter separation:
 1. Create `seeders/<context>.seeder.ts` implementing `Seeder` via domain ports.
 2. Add the concrete adapter wiring in `makeSeeder()` inside `factories/make-seeder.factory.ts`.
 3. Add `new <Context>Seeder(...)` as a new constructor param on `DatabaseSeeder` and call `.seed()` in `run()`.
-4. Add a `Fake<Context>Seeder` in `test/seeders/` for unit-testing `DatabaseSeeder` in isolation.
 
 **Cross-seeder IDs:** when seeder B needs an ID created by seeder A, inject seeder B with the same repository port seeder A wrote to, and query by a known fixed value (e.g. `"seed@example.com"`).
 
