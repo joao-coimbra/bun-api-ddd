@@ -8,6 +8,7 @@
     "test:e2e": "bun test/run-e2e.ts",
     "db:generate": "bun --bun drizzle-kit generate",
     "db:migrate": "bun --bun drizzle-kit migrate",
+    "db:seed": "bun src/infra/database/seed.ts",
     "db:studio": "bun --bun drizzle-kit studio",
     "check": "ultracite check",
     "fix": "ultracite fix",
