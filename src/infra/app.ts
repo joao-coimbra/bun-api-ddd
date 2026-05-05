@@ -1,6 +1,7 @@
 import cors from "@elysiajs/cors"
 import { openapi } from "@elysiajs/openapi"
 import { Elysia } from "elysia"
+import { isDevelopment } from "./env"
 import { httpModule } from "./http/http.module"
 
 export const app = new Elysia()
@@ -31,6 +32,7 @@ export const app = new Elysia()
       exclude: {
         paths: ["/health"],
       },
+      enabled: isDevelopment,
     })
   )
   .head("/health", "OK")
