@@ -35,9 +35,9 @@ Stacked **CLAUDE.md** files are the primary playbook. Keep guidance in this hier
 |------|-----|------|
 | 1 | @CLAUDE.md (root) | Commands, path aliases, naming, `archstone` imports, global “do not” |
 | 2 | @src/CLAUDE.md | Dependency rule `infra → domain → core`, where new code lives |
-| 3 | @src/domain/CLAUDE.md | Bounded-context layout, events, repositories, and use-case conventions |
-| 4 | @src/domain/CLAUDE.md | Context folder layout, use cases, repos, events |
-| 5 | `src/domain/<context>/CLAUDE.md` | Per-context rules; **`identity`** is the long-lived reference (`AuthenticateAccount`, JWT, `users`). New domains copy that layout; use `src/domain/CLAUDE.md` for events/subscribers when adding them |
+| 3 | @src/domain/CLAUDE.md | Bounded-context structure, cross-context rules, entity/use-case/event conventions |
+| 4 | @src/domain/identity/CLAUDE.md | Reference bounded context (accounts, auth, JWT, crypto ports). Model new contexts on this layout |
+| 5 | `src/domain/<context>/CLAUDE.md` | Per-context rules for each additional bounded context |
 | 6 | @src/infra/CLAUDE.md (+ plugin CLAUDE.md under `database/`, `cryptography/jwt/`, `auth/`) | HTTP, Drizzle, env, cryptography; per-plugin playbooks |
 | 7 | @src/core/CLAUDE.md | `AppError` and shared primitives |
 | 8 | @test/CLAUDE.md | Factories, in-memory repos, e2e harness (never `*.spec.ts` here) |
@@ -58,6 +58,7 @@ bun run start      # run production bundle
 bun run db:generate  # create drizzle migrations from schema
 bun run db:migrate   # apply migrations
 bun run db:studio    # open drizzle studio
+bun run db:seed      # run database seeders (development data)
 bun test           # run every *.spec.ts (built-in runner, no npm script)
 bun run test:e2e   # *.e2e-spec.ts (Postgres + .env.test); see @test/CLAUDE.md (factories, treaty)
 bun run check      # ultracite check (lint + format diagnostics)
@@ -69,12 +70,12 @@ The pre-commit hook runs `bun test` then `bun x ultracite fix` and re-stages mod
 ## Conventions
 
 - **Path aliases** (`tsconfig.json`): `@/*` → `./src/*`, `test/*` → `./test/*`. Use `test/...` (no `@`) when importing helpers from a spec.
-- **`bun:test` titles:** use **`it("should …")`** for use cases and most unit specs; use **`test()`** (no `should` prefix) for `*.vo.spec.ts` and for **`*.e2e-spec.ts`** — see @test/CLAUDE.md.
+- **`bun:test` titles:** use **`it("should …")`** for use cases and most domain unit specs; use **`test()`** (no `should` prefix) for `*.vo.spec.ts`, infra unit specs (seeders, mappers), and **`*.e2e-spec.ts`** — see @test/CLAUDE.md.
 - **Use case unit specs:** **`expect(result.isRight()).toBeTrue()`** / **`isLeft()`** first; **`getOrThrow()`** after **`isRight()`** when you need the payload. **One `it` per flow**. Full recipe: @test/CLAUDE.md.
 - **New features:** follow **TDD-first** flow — write/adjust failing tests first (unit and/or E2E), implement minimally to pass, then refactor while keeping tests green. This rule is mandatory for agent-driven development.
 - **E2E / persistence factories:** constructor-injected **`DrizzleClient`** for **`AccountFactory`**-style inserts; **`beforeEach`** may **`db.delete(schema.users)`** for isolation; no **`db.select`** for assertions — use HTTP. Bearer routes: **`makeDrizzleAuthenticatedAccount()`** + treaty **`headers`**. Eden **`treaty`** quirks (**`204`** body as **`""`**, **`toMatchObject`** for JSON): **@test/CLAUDE.md** (*E2E assertions*).
-- **File names**: kebab-case with role suffix — `<name>.entity.ts`, `<name>.vo.ts`, `<name>.repository.ts`, `<name>.use-case.ts`, `<name>.error.ts`, `<subject>-<verb>.event.ts`, `on-<subject>-<verb>.subscriber.ts`, `<entity>-list.entity.ts`, `make-<entity>.factory.ts`, `in-memory-<entity>.repository.ts`.
-- **Class names**: PascalCase with matching suffix — `<Name>UseCase`, `<Name>Repository` (interface), `<Subject><Verb>Event`, `On<Subject><Verb>`, `<Name>Error`. One class per file.
+- **File names**: kebab-case with role suffix — `<name>.entity.ts`, `<name>.vo.ts`, `<name>.repository.ts`, `<name>.use-case.ts`, `<name>.error.ts`, `<subject>-<verb>.event.ts`, `on-<subject>-<verb>.subscriber.ts`, `<entity>-list.entity.ts`, `make-<entity>.factory.ts`, `in-memory-<entity>.repository.ts`, `<name>.seeder.ts`, `fake-<name>.seeder.ts`.
+- **Class names**: PascalCase with matching suffix — `<Name>UseCase`, `<Name>Repository` (interface), `<Subject><Verb>Event`, `On<Subject><Verb>`, `<Name>Error`, `<Name>Seeder`. One class per file.
 - **Imports**: direct file imports only — never barrel files (`index.ts`). `import type` for type-only imports (required by `verbatimModuleSyntax`).
 - **Cross-context relative imports**: use `../` inside a single bounded context; cross to `core/` via `@/core/...`. Never reach across two different `domain/<context>/` folders.
 - **Formatting**: Biome via Ultracite. Semicolons `asNeeded`. `Bun` is a global. Run `bun run fix` before committing — the hook will do it anyway.

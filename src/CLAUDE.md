@@ -28,6 +28,7 @@ If a needed import would point right, the type is in the wrong layer — move it
 | Entity, value object, aggregate, domain event | `src/domain/<context>/enterprise/...` |
 | Use case, repository **contract** (interface), application error, event subscriber | `src/domain/<context>/application/...` |
 | Repository **implementation**, HTTP route, env loader, third-party client | `src/infra/<area>/...` (create the folder when first needed) |
+| Seeder (context data for dev/staging) | `src/infra/database/seeders/<context>.seeder.ts` |
 | Test factory, in-memory repo, custom matcher, `waitFor`-style helper | `test/<area>/...` (see @test/CLAUDE.md) |
 
 ## Memory / docs hierarchy
@@ -38,11 +39,9 @@ Read **tiers 1 → 5** in order when onboarding or adding a new bounded context.
 
 1. @CLAUDE.md (root) — commands, global conventions, `archstone` import cheatsheet
 2. @src/CLAUDE.md — layer dependency rules and “where new code goes” (**this file**)
-3. @src/domain/CLAUDE.md — bounded-context structure and cross-context boundaries
-4. @src/domain/CLAUDE.md — bounded-context layout and hard rules (entities, use cases, repos, events)
-5. **`src/domain/<context>/CLAUDE.md`** — playbook for the product area you are changing  
-   - **`identity`** (permanent reference): @src/domain/identity/CLAUDE.md — accounts, auth, crypto ports; extend here for auth/account features.  
-   - **New contexts:** add `src/domain/<new>/CLAUDE.md`, model folder layout on **`identity`**, and use @src/domain/CLAUDE.md for events, subscribers, and repository rules when you need them.
+3. @src/domain/CLAUDE.md — bounded-context structure, cross-context rules, entity/use-case/event conventions
+4. @src/domain/identity/CLAUDE.md — reference bounded context (accounts, auth, JWT, crypto ports); model new contexts on this layout
+5. **`src/domain/<context>/CLAUDE.md`** — playbook for each additional bounded context (add one when a context gains enough rules)
 6. @src/infra/CLAUDE.md — HTTP, Drizzle, env, cryptography wiring; **plugin playbooks:** @src/infra/database/CLAUDE.md, @src/infra/cryptography/jwt/CLAUDE.md, @src/infra/auth/CLAUDE.md
 7. @src/core/CLAUDE.md — `AppError` hierarchy and other framework-agnostic primitives
 8. @test/CLAUDE.md — factories, in-memory repositories, helpers, e2e preload (`run-e2e.ts`, `setup-e2e.ts`)
