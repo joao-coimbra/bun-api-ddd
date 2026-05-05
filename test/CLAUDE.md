@@ -12,6 +12,7 @@ test/
   factories/      make-<entity>.factory.ts        deterministic-ish entity builders
   repositories/   in-memory-<entity>.repository.ts in-memory implementations of domain repo contracts
                   in-memory.repository.ts          shared base class for the above
+  seeders/        fake-<context>.seeder.ts          Seeder fakes for unit-testing DatabaseSeeder
   helpers/        wait-for.ts, ...                 generic test utilities
 ```
 
