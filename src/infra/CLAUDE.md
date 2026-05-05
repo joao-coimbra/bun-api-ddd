@@ -38,11 +38,11 @@ src/infra/
     presenters/
   database/
     database.plugin.ts
-    seed.ts             entry point (bun run db:seed)
+    seed.ts
     types.ts
     CLAUDE.md      playbook: db decoration, Drizzle layout, seeder port/adapter design
-    seeders/            one seeder per bounded context (domain ports only)
-    factories/          DatabaseSeeder + concrete adapter wiring
+    seeders/
+    factories/
     drizzle/
       client.ts
       schema/

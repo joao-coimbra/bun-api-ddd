@@ -1,6 +1,6 @@
 # src/infra/database
 
-Playbook for **`database.plugin.ts`** and the Drizzle integration that sits beside it.
+Playbook for **`database.plugin.ts`**, the Drizzle integration, and the seeder stack.
 
 ## Plugin: `databasePlugin`
 
